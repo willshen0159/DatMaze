@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html class="gr__140_122_185_90"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+precision mediump float;
+
+attribute vec4 vPosition;
+attribute vec4 vColor;
+attribute vec4 vNormal;
+attribute vec2 vTexCoord;
+
+varying vec4 fPosition;
+varying vec4 fColor;
+varying vec4 fNormal;
+varying vec2 fTexCoord;
+
+uniform mat4 modelingMatrix;
+uniform mat4 viewingMatrix;
+uniform mat4 projectionMatrix;
+
+void main()
+{
+    vec4 N = normalize( modelingMatrix * vNormal );	// Normal vector
+
+	fPosition = modelingMatrix * vPosition;
+    fColor = vColor;
+	fNormal = N;
+	fTexCoord = vTexCoord;
+
+    gl_Position = projectionMatrix * viewingMatrix * modelingMatrix * vPosition;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+// Note that the following are interpolated between vertices.
+varying vec4 fPosition;
+varying vec4 fColor;  
+varying vec4 fNormal;
+varying vec2 fTexCoord;
+
+uniform sampler2D texture;
+
+uniform mat4 modelingMatrix;
+uniform mat4 viewingMatrix;
+uniform mat4 projectionMatrix;
+uniform mat4 lightMatrix;
+uniform vec4 lightPosition;
+uniform vec4 materialAmbient;
+uniform vec4 materialDiffuse;
+uniform vec4 materialSpecular;
+uniform float shininess;
+
+void main()
+{
+	vec4 eye = vec4(0.0, 0.0, 2.0, 1.0);  // The default eye position
+    vec4 L = normalize( lightMatrix*lightPosition - fPosition ); // Light vector
+    vec4 N = fNormal;	// Normal vector
+	vec4 V = normalize( eye - fPosition );		// Eye vector.
+    vec4 H = normalize( L + V );  // Halfway vector in the modified Phong model
+
+	// Normal variation stored in the texture is within [0,1]. Convert it to [-1, 1]
+	vec4 texel = texture2D( texture, fTexCoord ) * 2.0 - 1.0;
+	N.xy += texel.xy;
+	N = normalize( N );
+	
+    // Compute terms in the illumination equation
+    vec4 ambient = materialAmbient;
+
+    float Kd = max( dot(L, N), 0.0 );
+    vec4  diffuse = Kd * materialDiffuse;
+
+	float Ks = pow( max(dot(N, H), 0.0), shininess );
+    vec4  specular = Ks * materialSpecular;
+
+//    gl_FragColor = (ambient + diffuse) * texture2D( texture, fTexCoord ) + specular;
+    gl_FragColor = (ambient + diffuse) * fColor + specular;
+}
+</script>
+
+<script type="text/javascript" src="./Common/webgl-utils.js"></script>
+<script type="text/javascript" src="./Common/initShaders.js"></script>
+<script type="text/javascript" src="./Common/MV.js"></script>
+<script type="text/javascript" src="./Final_Project.js"></script>
+</head>
+
+<body data-gr-c-s-loaded="true">
+
+<br>
+<button id="xButton">Rotate X</button>
+<button id="yButton">Rotate Y</button>
+<button id="zButton">Rotate Z</button>
+<button id="pButton" style="background-color:#00ff00">Pause</button>
+<button id="dButton" style="background-color:#6688cc">Depth Test</button>
+<br>
+<canvas id="gl-canvas" width="720" height="720">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+
+
+
+</body></html>
