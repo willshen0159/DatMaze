@@ -340,14 +340,14 @@ function render() {
 	gl.uniformMatrix4fv( projectionLoc, 0, flatten(projection) );
 	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(moonRotationMatrix) );
   
-	for (i = -maze_half_legl.TRIANGLES, 0, numVertices );
-				}n; i <= maze_half_len; i++) {
+	for (i = -maze_half_len; i <= maze_half_len; i++) {
 		for (j = 0; j < 2; j++) {
 			for (k = -maze_half_len; k <= maze_half_len; k++) {
 				if (maze[i+maze_half_len][k+maze_half_len] | j == 0){
 					var cloned = mult(modeling, mult(translate(0.1*i, 0.1*j, 0.1*k), scale(0.1, 0.1, 0.1)));
 					gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned) );
-					gl.drawArrays( 
+					gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+				}
 			}
 		}
 	}
