@@ -80,7 +80,12 @@ var mouseDown = false;
 var lastMouseX = null;
 var lastMouseY = null;
 
-var moonRotationMatrix = mat4();
+//var moonRotationMatrix = mat4();
+var moonRotationMatrix = [[0.8933313170557982, -0.25362208401028374, -0.3709919089004878, 0],
+	[-0.07294105585034996, 0.7327540378928623, -0.6765730724194803, 0],
+	[0.4434396918846838, 0.6314644554161226, 0.6360926671541045, 0],
+	[0, 0, 0, 1]];
+moonRotationMatrix.matrix = true;
 
 function handleMouseDown(event) {
     mouseDown = true;
@@ -106,6 +111,8 @@ function handleMouseMove(event) {
     newRotationMatrix = mult(rotate(deltaY/10, 1, 0, 0), newRotationMatrix);
 
     moonRotationMatrix = mult(newRotationMatrix, moonRotationMatrix);
+
+	console.log(moonRotationMatrix);
 
     lastMouseX = newX
     lastMouseY = newY;
@@ -333,9 +340,9 @@ window.onload = function init()
     document.getElementById( "dButton" ).onclick = function() {depthTest=!depthTest;};
 	
 	// event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
-	canvas.onmousedown = handleMouseDown;
-    document.onmouseup = handleMouseUp;
-    document.onmousemove = handleMouseMove;
+	//canvas.onmousedown = handleMouseDown;
+    //document.onmouseup = handleMouseUp;
+    //document.onmousemove = handleMouseMove;
 
 	document.addEventListener('keydown', function(event) {
 		// keyboard "w"
@@ -378,7 +385,7 @@ function render() {
 	                mult(rotate(theta[yAxis], 0, 1, 0),rotate(theta[zAxis], 0, 0, 1)));
 
 	//if (paused)	modeling = moonRotationMatrix;
-	
+	eyePosition = [0, 0, 2]
 	viewing = lookAt(eyePosition, [0,0,0], [0,1,0]);
 
 	projection = perspective(45, 1.0, 1.0, 3.0);
