@@ -22,9 +22,19 @@ var moveBackward = 3;
 var moveRight = 4;
 var turnLeft = 5;
 var turnRight = 6;
+var animate = 100;
 
 var face = 0;
 var faceDirection = [0, 0, -100];
+var faceDir = [[0, 0, -100],
+				[-100, 0, 0],
+				[0, 0, 100],
+				[100, 0, 0]];
+
+var animated = 1;
+var animationCount = 0;
+var myPrePosition = [3, 3];
+var preFace = 0;
 
 var moveDir = [[0, -1],
 				[-1, 0],
@@ -420,6 +430,14 @@ function action() {
 		// check if a wall exist
 		if(maze[myPosition[0] + moveDir[(face + state - 1) % 4][0]]
 		[myPosition[1] + moveDir[(face + state - 1) % 4][1]] == 0) {
+			// check if animation mode 
+			if(animated) {
+				animationCount = 1;
+				// use myPrePosition to store the information of previous position
+				myPrePosition[0] = myPosition[0];
+				myPrePosition[1] = myPosition[1];
+				state += animate;
+			}
 			// when the wall doesn't exist, just move
 			for(i = 0; i < 2; i++) {
 				myPosition[i] += moveDir[(face + state - 1) % 4][i];
@@ -427,31 +445,60 @@ function action() {
 		}
 	}
 	else if(state == turnLeft) {
+		// check if animation mode 
+		if(animated) {
+			animationCount = 1;
+			// use preFace to store the previous information
+			preFace = face;
+			state += animate;
+		}
 		face = (face + 1) % 4;
 	}
 	else if(state == turnRight) {
+		// check if animation mode 
+		if(animated) {
+			animationCount = 1;
+			// use preFace to ...
+			preFace = face;
+			state += animate;
+		}
 		face = (face - 1 + 4) % 4;
 	}
-	state = stop;
+	// if there is an animation running, state won't be "stop"
+	if(animationCount == 0)
+		state = stop;
 }
 
 function setEyePosition() {
-	eyePosition[0] = (-maze_half_len + myPosition[0]) * 0.1;
-	eyePosition[2] = (-maze_half_len + myPosition[1]) * 0.1;
+	if(state >= (moveForward + animate) && state <= (moveRight + animate)) {
+		eyePosition[0] = (-maze_half_len + myPrePosition[0] + 
+			(myPosition[0] - myPrePosition[0]) * 0.1 * animationCount) * 0.1;
+		eyePosition[2] = (-maze_half_len + myPrePosition[1] +
+			(myPosition[1] - myPrePosition[1]) * 0.1 * animationCount) * 0.1;
+		animationCount++;
+		if(animationCount == 10)
+			animationCount = 0;
+	}
+	else {
+		eyePosition[0] = (-maze_half_len + myPosition[0]) * 0.1;
+		eyePosition[2] = (-maze_half_len + myPosition[1]) * 0.1;
+	}
 }
 
 function setFaceDirection() {
-	if(face == 0) {
-		faceDirection = [0, 0, -100];
+	if(state >= (turnLeft + animate) && state <= (turnRight + animate)) {
+		for(i = 0; i < 3; i++) {
+			faceDirection[i] = faceDir[preFace][i] + 
+				(faceDir[face][i] - faceDir[preFace][i]) * 0.1 * animationCount;
+		}
+		animationCount++;
+		if(animationCount == 10)
+			animationCount = 0;
 	}
-	else if(face == 1) {
-		faceDirection = [-100, 0, 0];
-	}
-	else if(face == 2) {
-		faceDirection = [0, 0, 100];
-	}
-	else if(face == 3) {
-		faceDirection = [100, 0, 0];
+	else {
+		for(i = 0; i < 3; i++) {
+			faceDirection[i] = faceDir[face][i];
+		}
 	}
 }
 
