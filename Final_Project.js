@@ -10,7 +10,26 @@ var axis = 0;
 var theta = [ 0, 0, 0 ];
 var paused = 0;
 var depthTest = 1;
-var eyePosition = [ 0, 0, 2 ];
+var eyePosition = [ 0.1, 0.11, 0.1 ];
+
+var myPosition = [3, 3];
+var state = 0;
+
+var stop = 0;
+var moveForward = 1;
+var moveLeft = 2;
+var moveBackward = 3;
+var moveRight = 4;
+var turnLeft = 5;
+var turnRight = 6;
+
+var face = 0;
+var faceDirection = [0, 0, -100];
+
+var moveDir = [[0, -1],
+				[-1, 0],
+				[0, 1],
+				[1, 0]];
 
 var maze_half_len = 2;
 var maze = [[1, 1, 1, 1, 1], 
@@ -318,7 +337,40 @@ window.onload = function init()
     document.onmouseup = handleMouseUp;
     document.onmousemove = handleMouseMove;
 
-    render();
+	document.addEventListener('keydown', function(event) {
+		// keyboard "w"
+		if(event.keyCode == 87) {
+			if(state == stop)
+				state = moveForward;
+		}
+		// keyboard "s"
+		else if(event.keyCode == 83) {
+			if(state == stop)
+				state = moveBackward;
+		}
+		// keyboard "a"
+		else if(event.keyCode == 65) {
+			if(state == stop)
+				state = moveLeft;
+		}
+		// keyboard "d"
+		else if(event.keyCode == 68) {
+			if(state == stop)
+				state = moveRight;
+		}
+		// keyboard "q"
+		else if(event.keyCode == 81) {
+			if(state == stop)
+				state = turnLeft;
+		}
+		// keyboard "e"
+		else if(event.keyCode == 69) {
+			if(state == stop)
+				state = turnRight;
+		}
+	});
+
+    testRender();
 };
 
 function render() {
@@ -353,4 +405,84 @@ function render() {
 	}
 
     requestAnimFrame( render );
+}
+
+function action() {
+	// state for moveing forward, backward, left and right
+	if(state >= moveForward && state <= moveRight) {
+		// check if a wall exist
+		if(maze[myPosition[0] + moveDir[(face + state - 1) % 4][0]]
+		[myPosition[1] + moveDir[(face + state - 1) % 4][1]] == 0) {
+			// when the wall doesn't exist, just move
+			for(i = 0; i < 2; i++) {
+				myPosition[i] += moveDir[(face + state - 1) % 4][i];
+			}
+		}
+	}
+	else if(state == turnLeft) {
+		face = (face + 1) % 4;
+	}
+	else if(state == turnRight) {
+		face = (face - 1 + 4) % 4;
+	}
+	state = stop;
+}
+
+function setEyePosition() {
+	eyePosition[0] = (-maze_half_len + myPosition[0]) * 0.1;
+	eyePosition[2] = (-maze_half_len + myPosition[1]) * 0.1;
+}
+
+function setFaceDirection() {
+	if(face == 0) {
+		faceDirection = [0, 0, -100];
+	}
+	else if(face == 1) {
+		faceDirection = [-100, 0, 0];
+	}
+	else if(face == 2) {
+		faceDirection = [0, 0, 100];
+	}
+	else if(face == 3) {
+		faceDirection = [100, 0, 0];
+	}
+}
+
+function testRender() {
+	modeling = mult(rotate(0, 1, 0, 0),
+	                mult(rotate(0, 0, 1, 0),rotate(0, 0, 0, 1)));
+
+	//if (paused)	modeling = moonRotationMatrix;
+	
+	action();
+	
+	setEyePosition();
+	setFaceDirection();
+	
+	viewing = lookAt(eyePosition, faceDirection, [0,1,0]);
+
+	projection = perspective(100, 1.0, 0.01, 3.0);
+
+    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+
+    //if (! paused) theta[axis] += 1.0;
+	if (depthTest) gl.enable(gl.DEPTH_TEST); else gl.disable(gl.DEPTH_TEST);
+
+    gl.uniformMatrix4fv( viewingLoc,    0, flatten(viewing) );
+	gl.uniformMatrix4fv( projectionLoc, 0, flatten(projection) );
+	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(moonRotationMatrix) );
+  
+	for (i = -maze_half_len; i <= maze_half_len; i++) {
+		for (j = 0; j < 2; j++) {
+			for (k = -maze_half_len; k <= maze_half_len; k++) {
+				if (maze[i+maze_half_len][k+maze_half_len] | j == 0){
+					var cloned = mult(modeling, mult(translate(0.1*i, 0.1*j, 0.1*k), scale(0.1, 0.1, 0.1)));
+					gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned) );
+					gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+				}
+			}
+		}
+	}
+
+    requestAnimFrame( testRender );
 }
