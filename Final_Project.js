@@ -10,7 +10,7 @@ var axis = 0;
 var theta = [ 0, 0, 0 ];
 var paused = 0;
 var depthTest = 1;
-var eyePosition = [ 0.1, 0.11, 0.1 ];
+var eyePosition = [ 0.1, 0.1, 0.1 ];
 
 var myPosition = [3, 3];
 var state = 0;
