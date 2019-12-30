@@ -32,7 +32,7 @@ var faceDir = [[0, 0, -100],
 				[0, 0, 100],
 				[100, 0, 0]];
 
-var animated = 1;
+var animated = 0;
 var animationCount = 0;
 var myPrePosition = [3, 3];
 var preFace = 0;
@@ -567,6 +567,7 @@ function action() {
 	else if(state == newGame) {
 		initMyPosition();
 		initFace();
+		maze_size = 2;
 		maze_generate(maze, maze_size);
 	}
 	// if there is an animation running, state won't be "stop"
