@@ -41,49 +41,77 @@ var moveDir = [[0, -1],
 				[0, 1],
 				[1, 0]];
 
-var maze_half_len = 2;
-var maze = [[1, 1, 1, 1, 1], 
-			[1, 0, 0, 0, 1], 
-			[1, 0, 1, 0, 1], 
-			[1, 0, 0, 0, 1], 
-			[1, 1, 1, 1, 1]];
-/*
-function maze_initialize(maze, len){
-	for (i = 0; i < 2*len + 1; i++){
-		maze.push([]);
-		for (j = 0; j < 2*len + 1; j++){
-			// no wall (i+, i-, k+, k-)
-			maze[i].push([false, false, false, false]);
-		}
-	}
-}
 
-function getNeighors(cell){
+// Generate random maze
+function maze_generate(maze, size){
+	// maze: the plotting map
+	// path: the path I have been to 
+	// size: the size of the path(grid)
 	
-}
-
-function maze_generate(maze){
 	var len = maze.length;
 	var curx = 0;
 	var cury = 0;
 	var path = [];
+	var grid = [];
 	
-	var visited = [];
-	for (i = 0; i < 2*len + 1; i++){
-		visited.push([]);
-		for (j = 0; j < 2*len + 1; j++){
-			visited[i].push(false);
+	// Initialize the maze
+	for (i = 0; i < 2*size + 1; i++){
+		maze.push([]);
+		for (j = 0; j < 2*size + 1; j++){
+			if (i % 2 == 0 | j % 2 == 0){
+				// wall
+				maze[i].push(true);
+			} else {
+				// path grid point
+				maze[i].push(false);
+			}
 		}
 	}
 	
+	// record the path I have been to
+	for (i = 0; i < size; i++){
+		grid.push([]);
+		for (j = 0; j < size; j++){
+			// no wall (i+, i-, k+, k-)
+			grid[i].push(false);
+		}
+	}
 	
+	// random generate maze by recursive backtracker method
+	// 1. Choose the start
+	// 2. Choose a neighbor to move, and mark the position
+	// 3. If there is no neighbor can be reached, go backward and search neighbor again until we go back to the start
 	
-	console.log(len);
+	// start at 0, 0, and move the first setp
+	path.push([0, 0])
+	
+	// start the recursive loop
+	while (curx == 0 & cury == 0){
+		// Check the neighbor
+		
+		// if
+			// Random pick a neighbor to move
+		
+			// Record the path
+			
+		// else
+			// move backword
+	}
+	
+	//console.log(maze);
+	//console.log(grid);
 }
 
-maze_initialize(maze, maze_half_len);
-maze_generate(maze);
-*/
+
+// testing
+var maze = [];
+var maze_size = 2;
+maze_generate(maze, maze_size);
+maze[1][2] = false;
+maze[3][2] = false;
+maze[2][1] = false;
+maze[2][3] = false;
+console.log(maze);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
 var mouseDown = false;
@@ -409,10 +437,10 @@ function render() {
 	gl.uniformMatrix4fv( projectionLoc, 0, flatten(projection) );
 	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(moonRotationMatrix) );
   
-	for (i = -maze_half_len; i <= maze_half_len; i++) {
+	for (i = -maze_size; i <= maze_size; i++) {
 		for (j = 0; j < 2; j++) {
-			for (k = -maze_half_len; k <= maze_half_len; k++) {
-				if (maze[i+maze_half_len][k+maze_half_len] | j == 0){
+			for (k = -maze_size; k <= maze_size; k++) {
+				if (maze[i+maze_size][k+maze_size] | j == 0){
 					var cloned = mult(modeling, mult(translate(0.1*i, 0.1*j, 0.1*k), scale(0.1, 0.1, 0.1)));
 					gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned) );
 					gl.drawArrays( gl.TRIANGLES, 0, numVertices );
@@ -471,17 +499,17 @@ function action() {
 
 function setEyePosition() {
 	if(state >= (moveForward + animate) && state <= (moveRight + animate)) {
-		eyePosition[0] = (-maze_half_len + myPrePosition[0] + 
+		eyePosition[0] = (-maze_size + myPrePosition[0] + 
 			(myPosition[0] - myPrePosition[0]) * 0.1 * animationCount) * 0.1;
-		eyePosition[2] = (-maze_half_len + myPrePosition[1] +
+		eyePosition[2] = (-maze_size + myPrePosition[1] +
 			(myPosition[1] - myPrePosition[1]) * 0.1 * animationCount) * 0.1;
 		animationCount++;
 		if(animationCount == 10)
 			animationCount = 0;
 	}
 	else {
-		eyePosition[0] = (-maze_half_len + myPosition[0]) * 0.1;
-		eyePosition[2] = (-maze_half_len + myPosition[1]) * 0.1;
+		eyePosition[0] = (-maze_size + myPosition[0]) * 0.1;
+		eyePosition[2] = (-maze_size + myPosition[1]) * 0.1;
 	}
 }
 
@@ -526,10 +554,10 @@ function testRender() {
 	gl.uniformMatrix4fv( projectionLoc, 0, flatten(projection) );
 	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(moonRotationMatrix) );
   
-	for (i = -maze_half_len; i <= maze_half_len; i++) {
+	for (i = -maze_size; i <= maze_size; i++) {
 		for (j = 0; j < 2; j++) {
-			for (k = -maze_half_len; k <= maze_half_len; k++) {
-				if (maze[i+maze_half_len][k+maze_half_len] | j == 0){
+			for (k = -maze_size; k <= maze_size; k++) {
+				if (maze[i+maze_size][k+maze_size] | j == 0){
 					var cloned = mult(modeling, mult(translate(0.1*i, 0.1*j, 0.1*k), scale(0.1, 0.1, 0.1)));
 					gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned) );
 					gl.drawArrays( gl.TRIANGLES, 0, numVertices );
