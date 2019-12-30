@@ -59,7 +59,7 @@ function maze_generate(maze, size){
 	var grid = [];			// record the grid I have been to
 	
 	// Initialization
-	if (maze.length != 2*size+1){
+	if (maze.length == 0){
 		for (i = 0; i < 2*size + 1; i++){
 			maze.push([]);
 			for (j = 0; j < 2*size + 1; j++){
@@ -168,7 +168,7 @@ function maze_generate(maze, size){
 
 // testing
 var maze = [];
-var maze_size = 2;
+var maze_size = 3;
 maze_generate(maze, maze_size);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
