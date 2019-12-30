@@ -12,7 +12,7 @@ var paused = 0;
 var depthTest = 1;
 var eyePosition = [ 0.1, 0.1, 0.1 ];
 
-var myPosition = [3, 3];
+var myPosition = [1, 1];
 var state = 0;
 
 var stop = 0;
@@ -24,7 +24,7 @@ var turnLeft = 5;
 var turnRight = 6;
 var animate = 100;
 
-var face = 0;
+var face = 3;
 var faceDirection = [0, 0, -100];
 var faceDir = [[0, 0, -100],
 				[-100, 0, 0],
