@@ -22,6 +22,7 @@ var moveBackward = 3;
 var moveRight = 4;
 var turnLeft = 5;
 var turnRight = 6;
+var newGame = 7;
 var animate = 100;
 
 var face = 3;
@@ -417,6 +418,11 @@ window.onload = function init()
 			if(state == stop)
 				state = turnRight;
 		}
+		// keyboard "n"
+		else if(event.keyCode == 78) {
+			if(state == stop)
+				state = newGame;
+		}
 	});
 
     testRender();
@@ -454,6 +460,15 @@ function render() {
 	}
 
     requestAnimFrame( render );
+}
+
+function initMyPosition() {
+	myPosition[0] = 1;
+	myPosition[1] = 1;
+}
+
+function initFace() {
+	face = 3;
 }
 
 function action() {
@@ -495,6 +510,11 @@ function action() {
 			state += animate;
 		}
 		face = (face - 1 + 4) % 4;
+	}
+	else if(state == newGame) {
+		initMyPosition();
+		initFace();
+		maze_generate(maze, maze_size);
 	}
 	// if there is an animation running, state won't be "stop"
 	if(animationCount == 0)
