@@ -53,22 +53,35 @@ function maze_generate(maze, size){
 	// path: the path I have been to 
 	// size: the size of the path(grid)
 	
-	var len = maze.length;
-	var curx = 0;	// current x position
-	var cury = 0;	// current y position
-	var path = [];	// record the path I walked
-	var grid = [];	// record the grid I have been to
+	var curx = 0;			// current x position
+	var cury = 0;			// current y position
+	var path = [];			// record the path I walked
+	var grid = [];			// record the grid I have been to
 	
 	// Initialization
-	for (i = 0; i < 2*size + 1; i++){
-		maze.push([]);
-		for (j = 0; j < 2*size + 1; j++){
-			if (i % 2 == 0 | j % 2 == 0){
-				// wall
-				maze[i].push(true);
-			} else {
-				// path grid point
-				maze[i].push(false);
+	if (maze.length != 2*size+1){
+		for (i = 0; i < 2*size + 1; i++){
+			maze.push([]);
+			for (j = 0; j < 2*size + 1; j++){
+				if (i % 2 == 0 | j % 2 == 0){
+					// wall
+					maze[i].push(1);
+				} else {
+					// path grid point
+					maze[i].push(0);
+				}
+			}
+		}
+	} else{
+		for (i = 0; i < 2*size + 1; i++){
+			for (j = 0; j < 2*size + 1; j++){
+				if (i % 2 == 0 | j % 2 == 0){
+					// wall
+					maze[i][j] = 1;
+				} else {
+					// path grid point
+					maze[i][j] = 0;
+				}
 			}
 		}
 	}
@@ -90,10 +103,10 @@ function maze_generate(maze, size){
 	grid[curx][cury] = true;
 	path.push([0, 0]);
 	if (Math.random() < 0.5){
-		maze[2*curx + 1 + 1][2*cury + 1] = false;
+		maze[2*curx + 1 + 1][2*cury + 1] = 0;
 		curx += 1;
 	} else{
-		maze[2*curx + 1][2*cury + 1 + 1] = false;
+		maze[2*curx + 1][2*cury + 1 + 1] = 0;
 		cury += 1;
 	}
 	
@@ -137,7 +150,7 @@ function maze_generate(maze, size){
 		if (ava_direction.length > 0){
 			// pick a random neighbor to move
 			var temp = ava_direction[Math.floor(Math.random()*ava_direction.length)];
-			maze[2*curx+1 + moveDir[temp][0]][2*cury+1 + moveDir[temp][1]] = false;
+			maze[2*curx+1 + moveDir[temp][0]][2*cury+1 + moveDir[temp][1]] = 0;
 			curx += moveDir[temp][0];
 			cury += moveDir[temp][1];
 			grid[curx][cury] = true;
@@ -149,12 +162,13 @@ function maze_generate(maze, size){
 			cury = path[path.length - 1][1];
 		}
 	}
+	//console.log(maze);
 }
 
 
 // testing
 var maze = [];
-var maze_size = 5;
+var maze_size = 2;
 maze_generate(maze, maze_size);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
