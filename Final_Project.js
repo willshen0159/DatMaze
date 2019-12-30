@@ -84,8 +84,6 @@ function maze_generate(maze, size){
 	// 1. Choose the start
 	// 2. Choose a neighbor to move, mark the position, and break the wall
 	// 3. If there is no neighbor can be reached, go backward and search neighbor again until we go back to the start
-	
-	
 	var ava_direction = [];  // 0, 1, 2, 3
 	
 	// start at 0, 0, and move the first setp
@@ -151,10 +149,6 @@ function maze_generate(maze, size){
 			cury = path[path.length - 1][1];
 		}
 	}
-	
-	//console.log(maze);
-	console.log(grid);
-	console.log(path);
 }
 
 
@@ -162,7 +156,6 @@ function maze_generate(maze, size){
 var maze = [];
 var maze_size = 5;
 maze_generate(maze, maze_size);
-console.log(maze);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
 var mouseDown = false;
