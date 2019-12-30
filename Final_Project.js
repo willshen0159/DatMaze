@@ -36,7 +36,7 @@ var animationCount = 0;
 var myPrePosition = [3, 3];
 var preFace = 0;
 
-var animationFrame = [10, 10];
+var animationFrame = [18, 15];
 var moveAnimation = 0;
 var turnAnimation = 1;
 
@@ -507,6 +507,9 @@ function setEyePosition() {
 			(myPosition[0] - myPrePosition[0]) / animationFrame[moveAnimation] * animationCount) * 0.1;
 		eyePosition[2] = (-maze_size + myPrePosition[1] +
 			(myPosition[1] - myPrePosition[1]) / animationFrame[moveAnimation] * animationCount) * 0.1;
+		// change eyePosition[1] to make the movement more human
+		eyePosition[1] = 0.1 + 
+			Math.sin(Math.PI / animationFrame[moveAnimation] * animationCount) * 0.005;
 		animationCount++;
 		if(animationCount == animationFrame[moveAnimation])
 			animationCount = 0;
@@ -514,6 +517,7 @@ function setEyePosition() {
 	else {
 		eyePosition[0] = (-maze_size + myPosition[0]) * 0.1;
 		eyePosition[2] = (-maze_size + myPosition[1]) * 0.1;
+		eyePosition[1] = 0.1;
 	}
 }
 
