@@ -86,7 +86,7 @@ function maze_generate(maze, size){
 	path.push([0, 0])
 	
 	// start the recursive loop
-	while (curx == 0 & cury == 0){
+	//while (curx == 0 & cury == 0){
 		// Check the neighbor
 		
 		// if
@@ -96,7 +96,7 @@ function maze_generate(maze, size){
 			
 		// else
 			// move backword
-	}
+	//}
 	
 	//console.log(maze);
 	//console.log(grid);
