@@ -12,7 +12,7 @@ var paused = 0;
 var depthTest = 1;
 var eyePosition = [ 0.1, 0.1, 0.1 ];
 
-var myPosition = [3, 3];
+var myPosition = [1, 1];
 var state = 0;
 
 var stop = 0;
@@ -49,12 +49,12 @@ function maze_generate(maze, size){
 	// size: the size of the path(grid)
 	
 	var len = maze.length;
-	var curx = 0;
-	var cury = 0;
-	var path = [];
-	var grid = [];
+	var curx = 0;	// current x position
+	var cury = 0;	// current y position
+	var path = [];	// record the path I walked
+	var grid = [];	// record the grid I have been to
 	
-	// Initialize the maze
+	// Initialization
 	for (i = 0; i < 2*size + 1; i++){
 		maze.push([]);
 		for (j = 0; j < 2*size + 1; j++){
@@ -67,50 +67,96 @@ function maze_generate(maze, size){
 			}
 		}
 	}
-	
-	// record the path I have been to
 	for (i = 0; i < size; i++){
 		grid.push([]);
 		for (j = 0; j < size; j++){
-			// no wall (i+, i-, k+, k-)
 			grid[i].push(false);
 		}
 	}
 	
+	
 	// random generate maze by recursive backtracker method
 	// 1. Choose the start
-	// 2. Choose a neighbor to move, and mark the position
+	// 2. Choose a neighbor to move, mark the position, and break the wall
 	// 3. If there is no neighbor can be reached, go backward and search neighbor again until we go back to the start
 	
+	
+	var ava_direction = [];  // 0, 1, 2, 3
+	
 	// start at 0, 0, and move the first setp
-	path.push([0, 0])
+	grid[curx][cury] = true;
+	path.push([0, 0]);
+	if (Math.random() < 0.5){
+		maze[2*curx + 1 + 1][2*cury + 1] = false;
+		curx += 1;
+	} else{
+		maze[2*curx + 1][2*cury + 1 + 1] = false;
+		cury += 1;
+	}
+	
+	grid[curx][cury] = true;
+	path.push([curx, cury]);
 	
 	// start the recursive loop
-	//while (curx == 0 & cury == 0){
+	//for (i = 0; i < 4; i++){
+	while (curx != 0 | cury != 0){
 		// Check the neighbor
+		ava_direction = [];
+		// left
+		try{
+			if (!grid[curx][cury - 1] & cury > 0){
+				ava_direction.push(0);
+			}
+		} catch(e){
+		}
+		// up
+		try{
+			if (!grid[curx - 1][cury] & curx > 0){
+				ava_direction.push(1);
+			}
+		} catch(e){
+		}
+		// right
+		try{
+			if (!grid[curx][cury + 1] & cury < size - 1){
+				ava_direction.push(2);
+			}
+		} catch(e){
+		}
+		// down
+		try{
+			if (!grid[curx + 1][cury] & curx < size - 1){
+				ava_direction.push(3);
+			}
+		} catch(e){
+		}
 		
-		// if
-			// Random pick a neighbor to move
-		
-			// Record the path
-			
-		// else
+		if (ava_direction.length > 0){
+			// pick a random neighbor to move
+			var temp = ava_direction[Math.floor(Math.random()*ava_direction.length)];
+			maze[2*curx+1 + moveDir[temp][0]][2*cury+1 + moveDir[temp][1]] = false;
+			curx += moveDir[temp][0];
+			cury += moveDir[temp][1];
+			grid[curx][cury] = true;
+			path.push([curx, cury]);
+		}else{
 			// move backword
-	//}
+			path.pop();
+			curx = path[path.length - 1][0];
+			cury = path[path.length - 1][1];
+		}
+	}
 	
 	//console.log(maze);
-	//console.log(grid);
+	console.log(grid);
+	console.log(path);
 }
 
 
 // testing
 var maze = [];
-var maze_size = 2;
+var maze_size = 5;
 maze_generate(maze, maze_size);
-maze[1][2] = false;
-maze[3][2] = false;
-maze[2][1] = false;
-maze[2][3] = false;
 console.log(maze);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
