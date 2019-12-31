@@ -47,44 +47,64 @@ var moveDir = [[0, -1],
 				[1, 0]];
 
 
-// Generate random maze
-function maze_generate(maze, size){
-	// maze: the plotting map
-	// path: the path I have been to 
-	// size: the size of the path(grid)
-	
-	var curx = 0;			// current x position
-	var cury = 0;			// current y position
-	var path = [];			// record the path I walked
-	var grid = [];			// record the grid I have been to
-	
-	// Initialization
-	if (maze.length == 0){
-		for (i = 0; i < 2*size + 1; i++){
-			maze.push([]);
-			for (j = 0; j < 2*size + 1; j++){
-				if (i % 2 == 0 | j % 2 == 0){
-					// wall
-					maze[i].push(1);
-				} else {
-					// path grid point
-					maze[i].push(0);
-				}
-			}
-		}
-	} else{
-		for (i = 0; i < 2*size + 1; i++){
-			for (j = 0; j < 2*size + 1; j++){
-				if (i % 2 == 0 | j % 2 == 0){
+// Reset the wall and path of the maze
+function maze_reset(maze){
+	for (i = 0; i < maze.length; i++){
+		for (j = 0; j < maze.length; j++){
+			if (i % 2 == 0 | j % 2 == 0){
 					// wall
 					maze[i][j] = 1;
 				} else {
 					// path grid point
 					maze[i][j] = 0;
 				}
+		}
+	}
+}
+
+// Generate random maze
+function maze_generate(maze, size){
+	// maze: the plotting map
+	// path: the path I have been to 
+	// size: the size of the path(grid)
+	
+	var pre_len = maze.length;	// record the previous maze size
+	var curx = 0;				// current x position
+	var cury = 0;				// current y position
+	var path = [];				// record the path I walked
+	var grid = [];				// record the grid I have been to
+	
+	// Initialization
+	if (pre_len < 2*size + 1){
+		// add the column
+		for (i = 0; i < pre_len; i++){
+			for (j = pre_len; j < 2*size + 1; j++){
+				maze[i].push(1);
+			}
+		}
+		// add the row
+		for (i = pre_len; i < 2*size + 1; i++){
+			maze.push([]);
+			for (j = 0; j < 2*size + 1; j++){
+				maze[i].push(1);
+			}
+		}
+	} else if (pre_len > 2*size + 1){
+		// delete the row
+		for (i = 2*size + 1; i < pre_len; i++){
+			maze.pop();
+		}
+		// delete the column
+		for (i = 0; i < 2*size + 1; i++){
+			for (j = 2*size + 1; j < pre_len; j++){
+				maze[i].pop();
 			}
 		}
 	}
+	maze_reset(maze);
+	console.log(maze);
+	
+	// Grid initialize
 	for (i = 0; i < size; i++){
 		grid.push([]);
 		for (j = 0; j < size; j++){
@@ -567,7 +587,7 @@ function action() {
 	else if(state == newGame) {
 		initMyPosition();
 		initFace();
-		maze_size = 2;
+		maze_size = 3;
 		maze_generate(maze, maze_size);
 	}
 	// if there is an animation running, state won't be "stop"
