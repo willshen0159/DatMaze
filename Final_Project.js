@@ -26,13 +26,13 @@ var newGame = 7;
 var animate = 100;
 
 var face = 3;
-var faceDirection = [0, 0, -100];
-var faceDir = [[0, 0, -100],
-				[-100, 0, 0],
-				[0, 0, 100],
-				[100, 0, 0]];
+var faceDirection = [0, 0, -1];
+var faceDir = [[0, 0, -1],
+				[-1, 0, 0],
+				[0, 0, 1],
+				[1, 0, 0]];
 
-var animated = 0;
+var animated = 1;
 var animationCount = 0;
 var myPrePosition = [3, 3];
 var preFace = 0;
@@ -618,7 +618,7 @@ function setEyePosition() {
 function setFaceDirection() {
 	if(state >= (turnLeft + animate) && state <= (turnRight + animate)) {
 		for(i = 0; i < 3; i++) {
-			faceDirection[i] = faceDir[preFace][i] + 
+			faceDirection[i] = eyePosition[i] + faceDir[preFace][i] + 
 				(faceDir[face][i] - faceDir[preFace][i]) / animationFrame[turnAnimation] * animationCount;
 		}
 		animationCount++;
@@ -627,7 +627,7 @@ function setFaceDirection() {
 	}
 	else {
 		for(i = 0; i < 3; i++) {
-			faceDirection[i] = faceDir[face][i];
+			faceDirection[i] = eyePosition[i] + faceDir[face][i];
 		}
 	}
 }
