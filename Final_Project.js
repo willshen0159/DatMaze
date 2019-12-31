@@ -102,7 +102,7 @@ function maze_generate(maze, size){
 		}
 	}
 	maze_reset(maze);
-	console.log(maze);
+	//console.log(maze);
 	
 	// Grid initialize
 	for (i = 0; i < size; i++){
