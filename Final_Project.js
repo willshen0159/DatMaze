@@ -26,6 +26,8 @@ var newGame = 7;
 var mapping = 8;
 var animate = 100;
 
+var mappingHight = 0.08;
+
 var face = 3;
 var faceDirection = [0, 0, -1];
 var faceDir = [[0, 0, -1],
@@ -38,10 +40,11 @@ var animationCount = 0;
 var myPrePosition = [3, 3];
 var preFace = 0;
 
-var animationFrame = [18, 15, 400];
+var animationFrame = [18, 15, 400, 50];
 var moveAnimation = 0;
 var turnAnimation = 1;
 var newGameAnimation = 2;
+var mappingAnimation = 3;
 
 var moveDir = [[0, -1],
 				[-1, 0],
@@ -192,7 +195,7 @@ function maze_generate(maze, size){
 
 // testing
 var maze = [];
-var maze_size = 3;
+var maze_size = 10;
 maze_generate(maze, maze_size);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
@@ -510,8 +513,10 @@ window.onload = function init()
 		else if(event.keyCode == 77) {
 			if(state == stop)
 				state = mapping;
-			else if(state == mapping)
+			else if(state == mapping) {
 				state = stop;
+				animationCount = 0;
+			}
 		}
 	});
 
@@ -615,6 +620,12 @@ function action() {
 		}
 	}
 	else if(state == mapping) {
+		if(animationCount == animationFrame[mappingAnimation])
+			;
+		else if(animated) {
+			animationCount = 1;
+			state += animate;
+		}
 		return;
 	}
 	// if there is an animation running, state won't be "stop"
@@ -677,7 +688,11 @@ function setEyePosition() {
 		}
 	}
 	else if(state == mapping) {
-		eyePosition[1] = maze_size * 0.1;
+		eyePosition[1] = 0.1 + maze_size * mappingHight;
+	}
+	else if(state == mapping + animate) {
+		eyePosition[1] = 0.1 + (maze_size * mappingHight) / animationFrame[mappingAnimation] 
+			* animationCount;
 	}
 	else {
 		eyePosition[0] = (-maze_size + myPosition[0]) * 0.1;
@@ -721,6 +736,17 @@ function setFaceDirection() {
 		faceDirection[0] = 0;
 		faceDirection[1] = 0.1;
 		faceDirection[2] = 0;
+	}
+	else if(state == mapping + animate) {
+		faceDirection[1] = 0.1;
+		faceDirection[0] = (eyePosition[0] + faceDir[face][0]) / animationFrame[mappingAnimation] * 
+			(animationFrame[mappingAnimation] - animationCount);
+		faceDirection[2] = (eyePosition[2] + faceDir[face][2]) / animationFrame[mappingAnimation] * 
+			(animationFrame[mappingAnimation] - animationCount);
+		if(animationCount != animationFrame[mappingAnimation])
+			animationCount++;
+		else 
+			state = mapping;
 	}
 	else {
 		for(i = 0; i < 3; i++) {
