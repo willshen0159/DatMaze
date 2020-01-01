@@ -102,7 +102,6 @@ function maze_generate(maze, size){
 		}
 	}
 	maze_reset(maze);
-	//console.log(maze);
 	
 	// Grid initialize
 	for (i = 0; i < size; i++){
@@ -122,16 +121,17 @@ function maze_generate(maze, size){
 	// start at 0, 0, and move the first setp
 	grid[curx][cury] = true;
 	path.push([0, 0]);
-	if (Math.random() < 0.5){
-		maze[2*curx + 1 + 1][2*cury + 1] = 0;
-		curx += 1;
-	} else{
-		maze[2*curx + 1][2*cury + 1 + 1] = 0;
-		cury += 1;
+	if (size != 1){ // avoid the case which the size equals to 1
+		if (Math.random() < 0.5){
+			maze[2*curx + 1 + 1][2*cury + 1] = 0;
+			curx += 1;
+		} else{
+			maze[2*curx + 1][2*cury + 1 + 1] = 0;
+			cury += 1;
+		}
+		grid[curx][cury] = true;
+		path.push([curx, cury]);
 	}
-	
-	grid[curx][cury] = true;
-	path.push([curx, cury]);
 	
 	// start the recursive loop
 	//for (i = 0; i < 4; i++){
@@ -188,7 +188,7 @@ function maze_generate(maze, size){
 
 // testing
 var maze = [];
-var maze_size = 3;
+var maze_size = 1;
 maze_generate(maze, maze_size);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
