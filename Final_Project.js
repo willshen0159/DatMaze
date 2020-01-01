@@ -217,7 +217,7 @@ function maze_generate(maze, size, fix_end){
 
 // Creating maze
 var maze = [];
-var maze_size = 1;
+var maze_size = 10;
 var end = [false, 0, 0];
 maze_generate(maze, maze_size, end);
 //console.log(maze);
@@ -748,7 +748,7 @@ function setFaceDirection() {
 		else {
 			faceDirection[0] = (eyePosition[0] + faceDir[face][0]) / 
 				(animationFrame[newGameAnimation] / 2) * 
-				(animationCount - animationFrame[newGameAnimation] / 2);
+				(animationCount - animationFrame[newGameAnimation] / 2) + 0.00000000000001;
 			faceDirection[2] = (eyePosition[2] + faceDir[face][2]) / 
 				(animationFrame[newGameAnimation] / 2) * 
 				(animationCount - animationFrame[newGameAnimation] / 2);
@@ -758,7 +758,7 @@ function setFaceDirection() {
 			animationCount = 0;
 	}
 	else if(state == mapping) {
-		faceDirection[0] = (-maze_size + end[1]) * 0.1;
+		faceDirection[0] = (-maze_size + end[1]) * 0.1 + 0.00000000000001;
 		faceDirection[1] = 0.1;
 		faceDirection[2] = (-maze_size + end[2]) * 0.1;
 	}
@@ -766,7 +766,7 @@ function setFaceDirection() {
 		faceDirection[1] = 0.1;
 		faceDirection[0] = (eyePosition[0] + faceDir[face][0]) + 
 			((-maze_size + end[1]) * 0.1 - (eyePosition[0] + faceDir[face][0])) 
-			/ animationFrame[mappingAnimation] * animationCount;
+			/ animationFrame[mappingAnimation] * animationCount + 0.00000000000001;
 		faceDirection[2] = (eyePosition[2] + faceDir[face][2]) + 
 			((-maze_size + end[2]) * 0.1 - (eyePosition[2] + faceDir[face][2])) 
 			/ animationFrame[mappingAnimation] * animationCount;
