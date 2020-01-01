@@ -69,46 +69,19 @@ function maze_reset(maze){
 	}
 }
 
-// Generate random maze
-function maze_generate(maze, size){
-	// maze: the plotting map
-	// path: the path I have been to 
-	// size: the size of the path(grid)
-	
-	var pre_len = maze.length;	// record the previous maze size
+// random generate maze by recursive backtracker method
+function maze_algorithm(maze, size, fix_end){
+	// 1. Choose the start
+	// 2. Choose a neighbor to move, mark the position, and break the wall
+	// 3. If there is no neighbor can be reached, go backward and search neighbor again until we go back to the start
 	var curx = 0;				// current x position
 	var cury = 0;				// current y position
 	var path = [];				// record the path I walked
+	var ava_direction = [];  	// available direction (0, 1, 2, 3)
 	var grid = [];				// record the grid I have been to
+	var possible_end = [];		// possible end 
+	var pre_step = true;		// true -> foreward, false -> backward
 	
-	// Initialization
-	if (pre_len < 2*size + 1){
-		// add the column
-		for (i = 0; i < pre_len; i++){
-			for (j = pre_len; j < 2*size + 1; j++){
-				maze[i].push(1);
-			}
-		}
-		// add the row
-		for (i = pre_len; i < 2*size + 1; i++){
-			maze.push([]);
-			for (j = 0; j < 2*size + 1; j++){
-				maze[i].push(1);
-			}
-		}
-	} else if (pre_len > 2*size + 1){
-		// delete the row
-		for (i = 2*size + 1; i < pre_len; i++){
-			maze.pop();
-		}
-		// delete the column
-		for (i = 0; i < 2*size + 1; i++){
-			for (j = 2*size + 1; j < pre_len; j++){
-				maze[i].pop();
-			}
-		}
-	}
-	maze_reset(maze);
 	
 	// Grid initialize
 	for (i = 0; i < size; i++){
@@ -117,13 +90,6 @@ function maze_generate(maze, size){
 			grid[i].push(false);
 		}
 	}
-	
-	
-	// random generate maze by recursive backtracker method
-	// 1. Choose the start
-	// 2. Choose a neighbor to move, mark the position, and break the wall
-	// 3. If there is no neighbor can be reached, go backward and search neighbor again until we go back to the start
-	var ava_direction = [];  // 0, 1, 2, 3
 	
 	// start at 0, 0, and move the first setp
 	grid[curx][cury] = true;
@@ -182,21 +148,77 @@ function maze_generate(maze, size){
 			cury += moveDir[temp][1];
 			grid[curx][cury] = true;
 			path.push([curx, cury]);
+			pre_step = true;
 		}else{
 			// move backword
+			if (pre_step){
+				possible_end.push([curx, cury]);
+				pre_step = false;
+			}
 			path.pop();
 			curx = path[path.length - 1][0];
 			cury = path[path.length - 1][1];
 		}
 	}
-	//console.log(maze);
+	
+	// check if fix the end
+	if (fix_end[0]){
+		fix_end[1] = maze.length - 2;
+		fix_end[2] = maze.length - 2;
+	}else{
+		var temp2 = possible_end[Math.floor(Math.random()*possible_end.length)];
+		fix_end[1] = 2 * possible_end[temp][0] + 1;
+		fix_end[2] = 2 * possible_end[temp][1] + 1;
+	}
+}
+
+// Generate random maze
+function maze_generate(maze, size, fix_end){
+	// maze: the plotting map
+	// size: the size of the grid
+	// fix_end: if fix end at (maze.length - 2, maze.length - 2) -> true, 
+	//			it will return [true, endx, endy]
+	
+	var pre_len = maze.length;	// record the previous maze size
+	
+	// Initialization
+	if (pre_len < 2*size + 1){
+		// add the column
+		for (i = 0; i < pre_len; i++){
+			for (j = pre_len; j < 2*size + 1; j++){
+				maze[i].push(1);
+			}
+		}
+		// add the row
+		for (i = pre_len; i < 2*size + 1; i++){
+			maze.push([]);
+			for (j = 0; j < 2*size + 1; j++){
+				maze[i].push(1);
+			}
+		}
+	} else if (pre_len > 2*size + 1){
+		// delete the row
+		for (i = 2*size + 1; i < pre_len; i++){
+			maze.pop();
+		}
+		// delete the column
+		for (i = 0; i < 2*size + 1; i++){
+			for (j = 2*size + 1; j < pre_len; j++){
+				maze[i].pop();
+			}
+		}
+	}
+	maze_reset(maze);
+	maze_algorithm(maze, size, fix_end);
 }
 
 
 // Creating maze
 var maze = [];
 var maze_size = 10;
-maze_generate(maze, maze_size);
+var end = [false, 0, 0];
+maze_generate(maze, maze_size, end);
+console.log(end);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
 var mouseDown = false;
