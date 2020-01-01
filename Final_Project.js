@@ -24,9 +24,12 @@ var turnLeft = 5;
 var turnRight = 6;
 var newGame = 7;
 var mapping = 8;
+var nextGame = 9;
 var animate = 100;
 
 var mappingHight = 0.08;
+
+var nextMazeSize = 2;
 
 var face = 3;
 var faceDirection = [0, 0, -1];
@@ -217,7 +220,7 @@ function maze_generate(maze, size, fix_end){
 
 // Creating maze
 var maze = [];
-var maze_size = 5;
+var maze_size = 2;
 var end = [false, 0, 0];
 maze_generate(maze, maze_size, end);
 //console.log(maze);
@@ -641,7 +644,8 @@ function action() {
 		initMyPosition();
 		initFace();
 		if(!animated) {
-			maze_generate(maze, maze_size, end);
+			maze_size = nextMazeSize;
+			maze_generate(maze, nextMazeSize, end);
 		}
 	}
 	else if(state == mapping) {
@@ -651,6 +655,11 @@ function action() {
 			animationCount = 1;
 			state += animate;
 		}
+		return;
+	}
+	else if(state == nextGame) {
+		nextMazeSize = maze_size + 1;
+		state = newGame;
 		return;
 	}
 	// if there is an animation running, state won't be "stop"
@@ -707,7 +716,8 @@ function setEyePosition() {
 		}
 		// when count to half, generate the new maze, init the position
 		if(animationCount == animationFrame[newGameAnimation] / 2) {
-			maze_generate(maze, maze_size, end);
+			maze_size = nextMazeSize;
+			maze_generate(maze, nextMazeSize, end);
 			eyePosition[0] = (-maze_size + myPosition[0]) * 0.1;
 			eyePosition[2] = (-maze_size + myPosition[1]) * 0.1;
 		}
@@ -846,7 +856,7 @@ function testRender() {
 	gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 	
 	if(myPosition[0] == end[1] && myPosition[1] == end[2] && state == stop)
-		state = newGame;
+		state = nextGame;
 	
     requestAnimFrame( testRender );
 }
