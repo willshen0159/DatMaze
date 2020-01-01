@@ -24,9 +24,14 @@ var turnLeft = 5;
 var turnRight = 6;
 var newGame = 7;
 var mapping = 8;
+var nextGame = 9;
 var animate = 100;
 
 var mappingHight = 0.08;
+
+var nextMazeSize = 2;
+
+var mazeColor = [1, 1, 0.8];
 
 var face = 3;
 var faceDirection = [0, 0, -1];
@@ -217,7 +222,7 @@ function maze_generate(maze, size, fix_end){
 
 // Creating maze
 var maze = [];
-var maze_size = 3;
+var maze_size = 2;
 var end = [false, 0, 0];
 maze_generate(maze, maze_size, end);
 //console.log(maze);
@@ -543,6 +548,11 @@ window.onload = function init()
 				animationCount = 0;
 			}
 		}
+		// keyboard "p"
+		else if(event.keyCode == 80) {
+			if(state == stop)
+				state = nextGame;
+		}
 	});
 
     testRender();
@@ -641,7 +651,9 @@ function action() {
 		initMyPosition();
 		initFace();
 		if(!animated) {
+			maze_size = nextMazeSize;
 			maze_generate(maze, maze_size, end);
+			changeMazeColor();
 		}
 	}
 	else if(state == mapping) {
@@ -651,6 +663,11 @@ function action() {
 			animationCount = 1;
 			state += animate;
 		}
+		return;
+	}
+	else if(state == nextGame) {
+		nextMazeSize = maze_size + 1;
+		state = newGame;
 		return;
 	}
 	// if there is an animation running, state won't be "stop"
@@ -707,7 +724,9 @@ function setEyePosition() {
 		}
 		// when count to half, generate the new maze, init the position
 		if(animationCount == animationFrame[newGameAnimation] / 2) {
+			maze_size = nextMazeSize;
 			maze_generate(maze, maze_size, end);
+			changeMazeColor();
 			eyePosition[0] = (-maze_size + myPosition[0]) * 0.1;
 			eyePosition[2] = (-maze_size + myPosition[1]) * 0.1;
 		}
@@ -748,7 +767,7 @@ function setFaceDirection() {
 		else {
 			faceDirection[0] = (eyePosition[0] + faceDir[face][0]) / 
 				(animationFrame[newGameAnimation] / 2) * 
-				(animationCount - animationFrame[newGameAnimation] / 2);
+				(animationCount - animationFrame[newGameAnimation] / 2) + 0.00000000000001;
 			faceDirection[2] = (eyePosition[2] + faceDir[face][2]) / 
 				(animationFrame[newGameAnimation] / 2) * 
 				(animationCount - animationFrame[newGameAnimation] / 2);
@@ -758,17 +777,17 @@ function setFaceDirection() {
 			animationCount = 0;
 	}
 	else if(state == mapping) {
-		faceDirection[0] = (maze_size - 1) * 0.1;
+		faceDirection[0] = (-maze_size + end[1]) * 0.1 + 0.00000000000001;
 		faceDirection[1] = 0.1;
-		faceDirection[2] = (maze_size - 1) * 0.1;
+		faceDirection[2] = (-maze_size + end[2]) * 0.1;
 	}
 	else if(state == mapping + animate) {
 		faceDirection[1] = 0.1;
 		faceDirection[0] = (eyePosition[0] + faceDir[face][0]) + 
-			((maze_size - 1) * 0.1 - (eyePosition[0] + faceDir[face][0])) 
-			/ animationFrame[mappingAnimation] * animationCount;
+			((-maze_size + end[1]) * 0.1 - (eyePosition[0] + faceDir[face][0])) 
+			/ animationFrame[mappingAnimation] * animationCount + 0.00000000000001;
 		faceDirection[2] = (eyePosition[2] + faceDir[face][2]) + 
-			((maze_size - 1) * 0.1 - (eyePosition[2] + faceDir[face][2])) 
+			((-maze_size + end[2]) * 0.1 - (eyePosition[2] + faceDir[face][2])) 
 			/ animationFrame[mappingAnimation] * animationCount;
 		if(animationCount != animationFrame[mappingAnimation])
 			animationCount++;
@@ -796,6 +815,33 @@ function setMazeColor(R, G, B) {
 	gl.enableVertexAttribArray( vColor );
 }
 
+function changeMazeColor() {
+	if(maze_size < 4) {
+		mazeColor[0] = 1;
+		mazeColor[1] = 1;
+		mazeColor[2] = 0.8;
+	}
+	else if(maze_size < 6) {
+		mazeColor[0] = 0.8;
+		mazeColor[1] = 0.6;
+		mazeColor[2] = 0.3;
+	}
+	else if(maze_size < 8){
+		mazeColor[0] = 0.6;
+		mazeColor[1] = 1;
+		mazeColor[2] = 0.8;
+	}
+	else if(maze_size < 10){
+		mazeColor[0] = 1;
+		mazeColor[1] = 0.5;
+		mazeColor[2] = 0.5;
+	}
+	else {
+		for(i = 0; i < 3; i++)
+			mazeColor[i] = Math.random();
+	}
+}
+
 function testRender() {
 	modeling = mult(rotate(0, 1, 0, 0),
 	                mult(rotate(0, 0, 1, 0),rotate(0, 0, 0, 1)));
@@ -807,7 +853,7 @@ function testRender() {
 	setEyePosition();
 	setFaceDirection();
 	
-	setMazeColor(1, 1, 0.8);
+	setMazeColor(mazeColor[0], mazeColor[1], mazeColor[2]);
 	
 	viewing = lookAt(eyePosition, faceDirection, [0,1,0]);
 
@@ -837,12 +883,16 @@ function testRender() {
 	setMazeColor(0.4, 0.8, 1);
 	endPointTheta[xAxis] = (endPointTheta[xAxis] + 1) % 360;
 	endPointTheta[yAxis] = (endPointTheta[yAxis] + 1) % 360;
-	var cloned = mult(modeling, mult(mult(translate((maze_size - 1) * 0.1, 0.15, (maze_size - 1) * 0.1),
-		scale(0.02, 0.02, 0.02)), mult(rotate(endPointTheta[xAxis], 1, 0, 0), 
-		mult(rotate(endPointTheta[yAxis], 0, 1, 0),rotate(endPointTheta[zAxis], 0, 0, 1)))));
+	var cloned = mult(modeling, mult(mult(translate((-maze_size + end[1]) * 0.1, 0.15,
+		(-maze_size + end[2]) * 0.1), scale(0.02, 0.02, 0.02)), 
+		mult(rotate(endPointTheta[xAxis], 1, 0, 0), mult(rotate(endPointTheta[yAxis], 0, 1, 0),
+		rotate(endPointTheta[zAxis], 0, 0, 1)))));
 	gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned));
 	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(endPointRotationMatrix) );
 	gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+	
+	if(myPosition[0] == end[1] && myPosition[1] == end[2] && state == stop)
+		state = nextGame;
 	
     requestAnimFrame( testRender );
 }
