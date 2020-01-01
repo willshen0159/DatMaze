@@ -26,20 +26,21 @@ var newGame = 7;
 var animate = 100;
 
 var face = 3;
-var faceDirection = [0, 0, -100];
-var faceDir = [[0, 0, -100],
-				[-100, 0, 0],
-				[0, 0, 100],
-				[100, 0, 0]];
+var faceDirection = [0, 0, -1];
+var faceDir = [[0, 0, -1],
+				[-1, 0, 0],
+				[0, 0, 1],
+				[1, 0, 0]];
 
-var animated = 0;
+var animated = 1;
 var animationCount = 0;
 var myPrePosition = [3, 3];
 var preFace = 0;
 
-var animationFrame = [18, 15];
+var animationFrame = [18, 15, 400];
 var moveAnimation = 0;
 var turnAnimation = 1;
+var newGameAnimation = 2;
 
 var moveDir = [[0, -1],
 				[-1, 0],
@@ -188,7 +189,11 @@ function maze_generate(maze, size){
 
 // testing
 var maze = [];
+<<<<<<< HEAD
 var maze_size = 1;
+=======
+var maze_size = 10;
+>>>>>>> 1cde120738799f51494019492348ec431ae96683
 maze_generate(maze, maze_size);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
@@ -392,7 +397,7 @@ window.onload = function init()
     gl.enableVertexAttribArray( vPosition );
 
     // color array atrribute buffer
-    
+	
     var cBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(colorsArray), gl.STATIC_DRAW );
@@ -496,11 +501,14 @@ window.onload = function init()
 			if(state == stop)
 				state = newGame;
 		}
+		else if(event.keyCode == 88) {
+			abc = 0;
+		}
 	});
 
     testRender();
 };
-
+var abc = 1;
 function render() {
 	modeling = mult(rotate(theta[xAxis], 1, 0, 0),
 	                mult(rotate(theta[yAxis], 0, 1, 0),rotate(theta[zAxis], 0, 0, 1)));
@@ -585,10 +593,17 @@ function action() {
 		face = (face - 1 + 4) % 4;
 	}
 	else if(state == newGame) {
+		// check if animat..
+		if(animated) {
+			animationCount = 1;
+			preFace = face;
+			state += animate;
+		}
 		initMyPosition();
 		initFace();
-		maze_size = 3;
-		maze_generate(maze, maze_size);
+		if(!animated) {
+			maze_generate(maze, maze_size);
+		}
 	}
 	// if there is an animation running, state won't be "stop"
 	if(animationCount == 0)
@@ -608,6 +623,47 @@ function setEyePosition() {
 		if(animationCount == animationFrame[moveAnimation])
 			animationCount = 0;
 	}
+	else if(state == newGame + animate) {
+		if(animationCount < animationFrame[newGameAnimation] / 2) {
+			// 4 is because pi / 2 and animationFrame[newGameAnimation] / 2
+			eyePosition[1] = 0.1 + Math.sin(Math.PI / 4 / animationFrame[newGameAnimation] *
+				animationCount) * 2;
+		}
+		else {
+			eyePosition[1] = 0.1 + Math.sin(Math.PI / 4 / animationFrame[newGameAnimation] *
+				(animationFrame[newGameAnimation] - animationCount)) * 2;
+		}
+		// for maze fade out and fade in
+		if(animationCount < animationFrame[newGameAnimation] / 2) {
+			for(i = 0; i < 36; i++) {
+			colorsArray[i][3] = 1 - 1 / (animationFrame[newGameAnimation] / 2) * animationCount;
+			}
+			var cBuffer = gl.createBuffer();
+			gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
+			gl.bufferData( gl.ARRAY_BUFFER, flatten(colorsArray), gl.STATIC_DRAW );
+			var vColor = gl.getAttribLocation( program, "vColor" );
+			gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
+			gl.enableVertexAttribArray( vColor );
+		}
+		else {
+			for(i = 0; i < 36; i++) {
+			colorsArray[i][3] = 1 / (animationFrame[newGameAnimation] / 2) * 
+				(animationCount - animationFrame[newGameAnimation] / 2);
+			}
+			var cBuffer = gl.createBuffer();
+			gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
+			gl.bufferData( gl.ARRAY_BUFFER, flatten(colorsArray), gl.STATIC_DRAW );
+			var vColor = gl.getAttribLocation( program, "vColor" );
+			gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
+			gl.enableVertexAttribArray( vColor );
+		}
+		// when count to half, generate the new maze, init the position
+		if(animationCount == animationFrame[newGameAnimation] / 2) {
+			maze_generate(maze, maze_size);
+			eyePosition[0] = (-maze_size + myPosition[0]) * 0.1;
+			eyePosition[2] = (-maze_size + myPosition[1]) * 0.1;
+		}
+	}
 	else {
 		eyePosition[0] = (-maze_size + myPosition[0]) * 0.1;
 		eyePosition[2] = (-maze_size + myPosition[1]) * 0.1;
@@ -618,16 +674,37 @@ function setEyePosition() {
 function setFaceDirection() {
 	if(state >= (turnLeft + animate) && state <= (turnRight + animate)) {
 		for(i = 0; i < 3; i++) {
-			faceDirection[i] = faceDir[preFace][i] + 
+			faceDirection[i] = eyePosition[i] + faceDir[preFace][i] + 
 				(faceDir[face][i] - faceDir[preFace][i]) / animationFrame[turnAnimation] * animationCount;
 		}
 		animationCount++;
 		if(animationCount == animationFrame[turnAnimation])
 			animationCount = 0;
 	}
+	else if(state == newGame + animate) {
+		if(animationCount < animationFrame[newGameAnimation] / 2) {
+			faceDirection[0] = (eyePosition[0] + faceDir[preFace][0]) / 
+				(animationFrame[newGameAnimation] / 2) * 
+				(animationFrame[newGameAnimation] / 2 - animationCount);
+			faceDirection[2] = (eyePosition[2] + faceDir[preFace][2]) / 
+				(animationFrame[newGameAnimation] / 2) * 
+				(animationFrame[newGameAnimation] / 2 - animationCount);
+		}
+		else {
+			faceDirection[0] = (eyePosition[0] + faceDir[face][0]) / 
+				(animationFrame[newGameAnimation] / 2) * 
+				(animationCount - animationFrame[newGameAnimation] / 2);
+			faceDirection[2] = (eyePosition[2] + faceDir[face][2]) / 
+				(animationFrame[newGameAnimation] / 2) * 
+				(animationCount - animationFrame[newGameAnimation] / 2);
+		}
+		animationCount++;
+		if(animationCount == animationFrame[newGameAnimation])
+			animationCount = 0;
+	}
 	else {
 		for(i = 0; i < 3; i++) {
-			faceDirection[i] = faceDir[face][i];
+			faceDirection[i] = eyePosition[i] + faceDir[face][i];
 		}
 	}
 }
@@ -667,6 +744,6 @@ function testRender() {
 			}
 		}
 	}
-
+	if(abc)
     requestAnimFrame( testRender );
 }
