@@ -762,7 +762,7 @@ function testRender() {
 		}
 	}
 	
-	setMazeColor(0.6, 0.8, 1);
+	setMazeColor(0.4, 0.8, 1);
 	endPointTheta[xAxis] = (endPointTheta[xAxis] + 1) % 360;
 	endPointTheta[yAxis] = (endPointTheta[yAxis] + 1) % 360;
 	var cloned = mult(modeling, mult(mult(translate((maze_size - 1) * 0.1, 0.15, (maze_size - 1) * 0.1),
