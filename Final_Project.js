@@ -40,7 +40,7 @@ var faceDir = [[0, 0, -1],
 				[0, 0, 1],
 				[1, 0, 0]];
 
-var animated = 1;
+var animated = 0;
 var animationCount = 0;
 var myPrePosition = [3, 3];
 var preFace = 0;
@@ -831,10 +831,14 @@ function changeMazeColor() {
 		mazeColor[1] = 1;
 		mazeColor[2] = 0.8;
 	}
-	else {
+	else if(maze_size < 10){
 		mazeColor[0] = 1;
 		mazeColor[1] = 0.5;
 		mazeColor[2] = 0.5;
+	}
+	else {
+		for(i = 0; i < 3; i++)
+			mazeColor[i] = Math.random();
 	}
 }
 
