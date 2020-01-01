@@ -217,7 +217,7 @@ function maze_generate(maze, size, fix_end){
 
 // Creating maze
 var maze = [];
-var maze_size = 10;
+var maze_size = 3;
 var end = [false, 0, 0];
 maze_generate(maze, maze_size, end);
 //console.log(maze);
@@ -641,7 +641,7 @@ function action() {
 		initMyPosition();
 		initFace();
 		if(!animated) {
-			maze_generate(maze, maze_size);
+			maze_generate(maze, maze_size, end);
 		}
 	}
 	else if(state == mapping) {
@@ -707,7 +707,7 @@ function setEyePosition() {
 		}
 		// when count to half, generate the new maze, init the position
 		if(animationCount == animationFrame[newGameAnimation] / 2) {
-			maze_generate(maze, maze_size);
+			maze_generate(maze, maze_size, end);
 			eyePosition[0] = (-maze_size + myPosition[0]) * 0.1;
 			eyePosition[2] = (-maze_size + myPosition[1]) * 0.1;
 		}
