@@ -548,6 +548,11 @@ window.onload = function init()
 				animationCount = 0;
 			}
 		}
+		// keyboard "p"
+		else if(event.keyCode == 80) {
+			if(state == stop)
+				state = nextGame;
+		}
 	});
 
     testRender();
@@ -817,6 +822,11 @@ function changeMazeColor() {
 		mazeColor[2] = 0.8;
 	}
 	else if(maze_size < 6) {
+		mazeColor[0] = 0.8;
+		mazeColor[1] = 0.6;
+		mazeColor[2] = 0.3;
+	}
+	else if(maze_size < 8){
 		mazeColor[0] = 0.6;
 		mazeColor[1] = 1;
 		mazeColor[2] = 0.8;
