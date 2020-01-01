@@ -23,6 +23,7 @@ var moveRight = 4;
 var turnLeft = 5;
 var turnRight = 6;
 var newGame = 7;
+var mapping = 8;
 var animate = 100;
 
 var face = 3;
@@ -191,7 +192,7 @@ function maze_generate(maze, size){
 
 // testing
 var maze = [];
-var maze_size = 2;
+var maze_size = 3;
 maze_generate(maze, maze_size);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
@@ -505,6 +506,13 @@ window.onload = function init()
 			if(state == stop)
 				state = newGame;
 		}
+		// keyboard "m"
+		else if(event.keyCode == 77) {
+			if(state == stop)
+				state = mapping;
+			else if(state == mapping)
+				state = stop;
+		}
 	});
 
     testRender();
@@ -606,6 +614,9 @@ function action() {
 			maze_generate(maze, maze_size);
 		}
 	}
+	else if(state == mapping) {
+		return;
+	}
 	// if there is an animation running, state won't be "stop"
 	if(animationCount == 0)
 		state = stop;
@@ -665,6 +676,9 @@ function setEyePosition() {
 			eyePosition[2] = (-maze_size + myPosition[1]) * 0.1;
 		}
 	}
+	else if(state == mapping) {
+		eyePosition[1] = maze_size * 0.1;
+	}
 	else {
 		eyePosition[0] = (-maze_size + myPosition[0]) * 0.1;
 		eyePosition[2] = (-maze_size + myPosition[1]) * 0.1;
@@ -702,6 +716,11 @@ function setFaceDirection() {
 		animationCount++;
 		if(animationCount == animationFrame[newGameAnimation])
 			animationCount = 0;
+	}
+	else if(state == mapping) {
+		faceDirection[0] = 0;
+		faceDirection[1] = 0.1;
+		faceDirection[2] = 0;
 	}
 	else {
 		for(i = 0; i < 3; i++) {
