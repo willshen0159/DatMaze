@@ -217,7 +217,7 @@ function maze_generate(maze, size, fix_end){
 
 // Creating maze
 var maze = [];
-var maze_size = 10;
+var maze_size = 5;
 var end = [false, 0, 0];
 maze_generate(maze, maze_size, end);
 //console.log(maze);
@@ -844,6 +844,9 @@ function testRender() {
 	gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned));
 	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(endPointRotationMatrix) );
 	gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+	
+	if(myPosition[0] == end[1] && myPosition[1] == end[2] && state == stop)
+		state = newGame;
 	
     requestAnimFrame( testRender );
 }
