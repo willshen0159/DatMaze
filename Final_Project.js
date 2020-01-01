@@ -40,7 +40,7 @@ var faceDir = [[0, 0, -1],
 				[0, 0, 1],
 				[1, 0, 0]];
 
-var animated = 0;
+var animated = 1;
 var animationCount = 0;
 var myPrePosition = [3, 3];
 var preFace = 0;
