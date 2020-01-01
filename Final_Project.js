@@ -217,7 +217,7 @@ function maze_generate(maze, size, fix_end){
 
 // Creating maze
 var maze = [];
-var maze_size = 10;
+var maze_size = 1;
 var end = [false, 0, 0];
 maze_generate(maze, maze_size, end);
 //console.log(maze);
@@ -641,7 +641,7 @@ function action() {
 		initMyPosition();
 		initFace();
 		if(!animated) {
-			maze_generate(maze, maze_size);
+			maze_generate(maze, maze_size, end);
 		}
 	}
 	else if(state == mapping) {
@@ -707,7 +707,7 @@ function setEyePosition() {
 		}
 		// when count to half, generate the new maze, init the position
 		if(animationCount == animationFrame[newGameAnimation] / 2) {
-			maze_generate(maze, maze_size);
+			maze_generate(maze, maze_size, end);
 			eyePosition[0] = (-maze_size + myPosition[0]) * 0.1;
 			eyePosition[2] = (-maze_size + myPosition[1]) * 0.1;
 		}
@@ -758,17 +758,17 @@ function setFaceDirection() {
 			animationCount = 0;
 	}
 	else if(state == mapping) {
-		faceDirection[0] = (maze_size - 1) * 0.1;
+		faceDirection[0] = (-maze_size + end[1]) * 0.1;
 		faceDirection[1] = 0.1;
-		faceDirection[2] = (maze_size - 1) * 0.1;
+		faceDirection[2] = (-maze_size + end[2]) * 0.1;
 	}
 	else if(state == mapping + animate) {
 		faceDirection[1] = 0.1;
 		faceDirection[0] = (eyePosition[0] + faceDir[face][0]) + 
-			((maze_size - 1) * 0.1 - (eyePosition[0] + faceDir[face][0])) 
+			((-maze_size + end[1]) * 0.1 - (eyePosition[0] + faceDir[face][0])) 
 			/ animationFrame[mappingAnimation] * animationCount;
 		faceDirection[2] = (eyePosition[2] + faceDir[face][2]) + 
-			((maze_size - 1) * 0.1 - (eyePosition[2] + faceDir[face][2])) 
+			((-maze_size + end[2]) * 0.1 - (eyePosition[2] + faceDir[face][2])) 
 			/ animationFrame[mappingAnimation] * animationCount;
 		if(animationCount != animationFrame[mappingAnimation])
 			animationCount++;
@@ -837,9 +837,10 @@ function testRender() {
 	setMazeColor(0.4, 0.8, 1);
 	endPointTheta[xAxis] = (endPointTheta[xAxis] + 1) % 360;
 	endPointTheta[yAxis] = (endPointTheta[yAxis] + 1) % 360;
-	var cloned = mult(modeling, mult(mult(translate((maze_size - 1) * 0.1, 0.15, (maze_size - 1) * 0.1),
-		scale(0.02, 0.02, 0.02)), mult(rotate(endPointTheta[xAxis], 1, 0, 0), 
-		mult(rotate(endPointTheta[yAxis], 0, 1, 0),rotate(endPointTheta[zAxis], 0, 0, 1)))));
+	var cloned = mult(modeling, mult(mult(translate((-maze_size + end[1]) * 0.1, 0.15,
+		(-maze_size + end[2]) * 0.1), scale(0.02, 0.02, 0.02)), 
+		mult(rotate(endPointTheta[xAxis], 1, 0, 0), mult(rotate(endPointTheta[yAxis], 0, 1, 0),
+		rotate(endPointTheta[zAxis], 0, 0, 1)))));
 	gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned));
 	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(endPointRotationMatrix) );
 	gl.drawArrays( gl.TRIANGLES, 0, numVertices );
