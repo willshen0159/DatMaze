@@ -104,6 +104,8 @@ function maze_algorithm(maze, size, fix_end){
 		}
 		grid[curx][cury] = true;
 		path.push([curx, cury]);
+	} else{
+		possible_end.push([0, 0]);
 	}
 	
 	// start the recursive loop
@@ -166,9 +168,9 @@ function maze_algorithm(maze, size, fix_end){
 		fix_end[1] = maze.length - 2;
 		fix_end[2] = maze.length - 2;
 	}else{
-		var temp2 = possible_end[Math.floor(Math.random()*possible_end.length)];
-		fix_end[1] = 2 * possible_end[temp][0] + 1;
-		fix_end[2] = 2 * possible_end[temp][1] + 1;
+		var temp2 = Math.floor(Math.random()*possible_end.length);
+		fix_end[1] = 2 * possible_end[temp2][0] + 1;
+		fix_end[2] = 2 * possible_end[temp2][1] + 1;
 	}
 }
 
@@ -218,7 +220,8 @@ var maze = [];
 var maze_size = 10;
 var end = [false, 0, 0];
 maze_generate(maze, maze_size, end);
-console.log(end);
+//console.log(maze);
+//console.log(end);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
 var mouseDown = false;
