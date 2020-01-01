@@ -47,6 +47,8 @@ var moveDir = [[0, -1],
 				[0, 1],
 				[1, 0]];
 
+var endPointTheta = [45, 45, 0];
+
 
 // Reset the wall and path of the maze
 function maze_reset(maze){
@@ -189,7 +191,7 @@ function maze_generate(maze, size){
 
 // testing
 var maze = [];
-var maze_size = 10;
+var maze_size = 2;
 maze_generate(maze, maze_size);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
@@ -203,6 +205,12 @@ var moonRotationMatrix = [[0.8933313170557982, -0.25362208401028374, -0.37099190
 	[0.4434396918846838, 0.6314644554161226, 0.6360926671541045, 0],
 	[0, 0, 0, 1]];
 moonRotationMatrix.matrix = true;
+
+var endPointRotationMatrix = [[-0.37251620408564196, -0.22499164665912458, -0.9003390675891072, 0],
+	[0.7384982911710434, 0.5156581606346375, -0.4344156250738973, 0],
+	[0.5620070743603364, -0.8267257225371119, -0.025935074019875277, 0],
+	[0, 0, 0, 1]];
+endPointRotationMatrix.matrix = true;
 
 function handleMouseDown(event) {
     mouseDown = true;
@@ -227,9 +235,9 @@ function handleMouseMove(event) {
     var deltaY = newY - lastMouseY;
     newRotationMatrix = mult(rotate(deltaY/10, 1, 0, 0), newRotationMatrix);
 
-    moonRotationMatrix = mult(newRotationMatrix, moonRotationMatrix);
+    endPointRotationMatrix = mult(newRotationMatrix, endPointRotationMatrix);
 
-	console.log(moonRotationMatrix);
+	console.log(endPointRotationMatrix);
 
     lastMouseX = newX
     lastMouseY = newY;
@@ -753,5 +761,16 @@ function testRender() {
 			}
 		}
 	}
+	
+	setMazeColor(0.6, 0.8, 1);
+	endPointTheta[xAxis] = (endPointTheta[xAxis] + 1) % 360;
+	endPointTheta[yAxis] = (endPointTheta[yAxis] + 1) % 360;
+	var cloned = mult(modeling, mult(mult(translate((maze_size - 1) * 0.1, 0.15, (maze_size - 1) * 0.1),
+		scale(0.02, 0.02, 0.02)), mult(rotate(endPointTheta[xAxis], 1, 0, 0), 
+		mult(rotate(endPointTheta[yAxis], 0, 1, 0),rotate(endPointTheta[zAxis], 0, 0, 1)))));
+	gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned));
+	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(endPointRotationMatrix) );
+	gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+	
     requestAnimFrame( testRender );
 }
