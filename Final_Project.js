@@ -193,13 +193,9 @@ function maze_generate(maze, size){
 }
 
 
-// testing
+// Creating maze
 var maze = [];
-<<<<<<< HEAD
-var maze_size = 1;
-=======
 var maze_size = 10;
->>>>>>> 1cde120738799f51494019492348ec431ae96683
 maze_generate(maze, maze_size);
 
 // event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
