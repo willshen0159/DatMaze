@@ -733,16 +733,18 @@ function setFaceDirection() {
 			animationCount = 0;
 	}
 	else if(state == mapping) {
-		faceDirection[0] = 0;
+		faceDirection[0] = (maze_size - 1) * 0.1;
 		faceDirection[1] = 0.1;
-		faceDirection[2] = 0;
+		faceDirection[2] = (maze_size - 1) * 0.1;
 	}
 	else if(state == mapping + animate) {
 		faceDirection[1] = 0.1;
-		faceDirection[0] = (eyePosition[0] + faceDir[face][0]) / animationFrame[mappingAnimation] * 
-			(animationFrame[mappingAnimation] - animationCount);
-		faceDirection[2] = (eyePosition[2] + faceDir[face][2]) / animationFrame[mappingAnimation] * 
-			(animationFrame[mappingAnimation] - animationCount);
+		faceDirection[0] = (eyePosition[0] + faceDir[face][0]) + 
+			((maze_size - 1) * 0.1 - (eyePosition[0] + faceDir[face][0])) 
+			/ animationFrame[mappingAnimation] * animationCount;
+		faceDirection[2] = (eyePosition[2] + faceDir[face][2]) + 
+			((maze_size - 1) * 0.1 - (eyePosition[2] + faceDir[face][2])) 
+			/ animationFrame[mappingAnimation] * animationCount;
 		if(animationCount != animationFrame[mappingAnimation])
 			animationCount++;
 		else 
