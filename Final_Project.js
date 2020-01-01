@@ -497,14 +497,11 @@ window.onload = function init()
 			if(state == stop)
 				state = newGame;
 		}
-		else if(event.keyCode == 88) {
-			abc = 0;
-		}
 	});
 
     testRender();
 };
-var abc = 1;
+
 function render() {
 	modeling = mult(rotate(theta[xAxis], 1, 0, 0),
 	                mult(rotate(theta[yAxis], 0, 1, 0),rotate(theta[zAxis], 0, 0, 1)));
@@ -740,6 +737,5 @@ function testRender() {
 			}
 		}
 	}
-	if(abc)
     requestAnimFrame( testRender );
 }
