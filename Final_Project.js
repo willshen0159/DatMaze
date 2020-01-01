@@ -640,8 +640,8 @@ function setEyePosition() {
 		}
 		else {
 			for(i = 0; i < 36; i++) {
-			colorsArray[i][3] = 1 / (animationFrame[newGameAnimation] / 2) * 
-				(animationCount - animationFrame[newGameAnimation] / 2);
+				colorsArray[i][3] = 1 / (animationFrame[newGameAnimation] / 2) * 
+					(animationCount - animationFrame[newGameAnimation] / 2);
 			}
 			var cBuffer = gl.createBuffer();
 			gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
@@ -702,6 +702,20 @@ function setFaceDirection() {
 	}
 }
 
+function setMazeColor(R, G, B) {
+	for(i = 0; i < 36; i++) {
+		colorsArray[i][0] = R;
+		colorsArray[i][1] = G;
+		colorsArray[i][2] = B;
+	}
+	var cBuffer = gl.createBuffer();
+	gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
+	gl.bufferData( gl.ARRAY_BUFFER, flatten(colorsArray), gl.STATIC_DRAW );
+	var vColor = gl.getAttribLocation( program, "vColor" );
+	gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
+	gl.enableVertexAttribArray( vColor );
+}
+
 function testRender() {
 	modeling = mult(rotate(0, 1, 0, 0),
 	                mult(rotate(0, 0, 1, 0),rotate(0, 0, 0, 1)));
@@ -712,6 +726,8 @@ function testRender() {
 	
 	setEyePosition();
 	setFaceDirection();
+	
+	setMazeColor(1, 1, 0.8);
 	
 	viewing = lookAt(eyePosition, faceDirection, [0,1,0]);
 
