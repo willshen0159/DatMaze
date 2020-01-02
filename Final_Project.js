@@ -672,7 +672,6 @@ function action() {
 		return;
 	}
 	else if(state == nextGame) {
-		bgm.muted = true;
 		win.play();
 		nextMazeSize = maze_size + 1;
 		state = newGame;
