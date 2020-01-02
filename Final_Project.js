@@ -492,11 +492,11 @@ window.onload = function init()
     gl.uniform1f( gl.getUniformLocation(program, "shininess"), materialShininess);
 
     //event listeners for buttons 
-    document.getElementById( "xButton" ).onclick = rotateX;
-    document.getElementById( "yButton" ).onclick = rotateY;
-    document.getElementById( "zButton" ).onclick = rotateZ;
-    document.getElementById( "pButton" ).onclick = function() {paused=!paused;};
-    document.getElementById( "dButton" ).onclick = function() {depthTest=!depthTest;};
+    //document.getElementById( "xButton" ).onclick = rotateX;
+    //document.getElementById( "yButton" ).onclick = rotateY;
+    //document.getElementById( "zButton" ).onclick = rotateZ;
+    //document.getElementById( "pButton" ).onclick = function() {paused=!paused;};
+    //document.getElementById( "dButton" ).onclick = function() {depthTest=!depthTest;};
 	
 	// event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
 	//canvas.onmousedown = handleMouseDown;
