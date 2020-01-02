@@ -497,14 +497,12 @@ window.onload = function init()
 		if(event.keyCode == 87) {
 			if(state == stop) {
 				state = moveForward;
-				walk_sound.play();
 			}
 		}
 		// keyboard "s"
 		else if(event.keyCode == 83) {
 			if(state == stop) {
 				state = moveBackward;
-				walk_sound.play();
 			}
 			else if(state == main) {
 				state = stop;
@@ -515,28 +513,24 @@ window.onload = function init()
 		else if(event.keyCode == 65) {
 			if(state == stop) {
 				state = moveLeft;
-				walk_sound.play();
 			}
 		}
 		// keyboard "d"
 		else if(event.keyCode == 68) {
 			if(state == stop) {
 				state = moveRight;
-				walk_sound.play();
 			}
 		}
 		// keyboard "q"
 		else if(event.keyCode == 81) {
 			if(state == stop) {
 				state = turnLeft;
-				walk_sound.play();
 			}
 		}
 		// keyboard "e"
 		else if(event.keyCode == 69) {
 			if(state == stop) {
 				state = turnRight;
-				walk_sound.play();
 			}
 		}
 		// keyboard "n"
@@ -620,6 +614,7 @@ function action() {
 		[myPosition[1] + moveDir[(face + state - 1) % 4][1]] == 0) {
 			// check if animation mode 
 			if(animated) {
+				walk_sound.play();
 				animationCount = 1;
 				// use myPrePosition to store the information of previous position
 				myPrePosition[0] = myPosition[0];
