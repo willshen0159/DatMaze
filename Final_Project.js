@@ -558,7 +558,7 @@ window.onload = function init()
 		}
 	});
 
-    mainRender();
+    gameRender();
 };
 
 
@@ -912,7 +912,7 @@ function gameRender() {
 	if(myPosition[0] == end[1] && myPosition[1] == end[2] && state == stop)
 		state = nextGame;
 		//win.play();
-    requestAnimFrame( testRender );
+    requestAnimFrame( gameRender );
 }
 
 var letter = 
@@ -920,7 +920,7 @@ var letter =
  [0, 0, 0, 0, 0],
  [0, 0, 0, 0, 0],
  [0, 0, 0, 0, 0],
- [0, 0, 0, 0, 0]]
+ [0, 0, 0, 0, 0]];
 
 function mainRender() {
 	modeling = mult(rotate(0, 1, 0, 0),
