@@ -58,6 +58,8 @@ var moveDir = [[0, -1],
 
 var endPointTheta = [45, 45, 0];
 
+var musicStarted = false; // music control
+
 
 // Reset the wall and path of the maze
 function maze_reset(maze){
@@ -277,22 +279,6 @@ function handleMouseMove(event) {
     lastMouseY = newY;
 }
 
-
-// event handlers for button clicks
-function rotateX() {
-	paused = 0;
-    axis = xAxis;
-};
-function rotateY() {
-	paused = 0;
-	axis = yAxis;
-};
-function rotateZ() {
-	paused = 0;
-	axis = zAxis;
-};
-
-
 // ModelView and Projection matrices
 var modelingLoc, viewingLoc, projectionLoc, lightMatrixLoc;
 var modeling, viewing, projection;
@@ -492,9 +478,6 @@ window.onload = function init()
     gl.uniform1f( gl.getUniformLocation(program, "shininess"), materialShininess);
 
     //event listeners for buttons 
-    document.getElementById( "xButton" ).onclick = rotateX;
-    document.getElementById( "yButton" ).onclick = rotateY;
-    document.getElementById( "zButton" ).onclick = rotateZ;
     document.getElementById( "pButton" ).onclick = function() {paused=!paused;};
     document.getElementById( "dButton" ).onclick = function() {depthTest=!depthTest;};
 	
@@ -558,6 +541,8 @@ window.onload = function init()
     testRender();
 };
 
+
+
 function render() {
 	modeling = mult(rotate(theta[xAxis], 1, 0, 0),
 	                mult(rotate(theta[yAxis], 0, 1, 0),rotate(theta[zAxis], 0, 0, 1)));
@@ -588,7 +573,6 @@ function render() {
 			}
 		}
 	}
-
     requestAnimFrame( render );
 }
 
@@ -842,6 +826,28 @@ function changeMazeColor() {
 	}
 }
 
+// play music function, but it seems not functional
+function Music(){
+	if (musicStarted) return;
+	
+	var context = new AudioContext();
+	var audio = document.getElementById('myAudio');
+	audio.crossOrigin = "anonymous";
+	var audioSrc = context.createMediaElementSource(audio);
+	
+	audioSrc.connect(context.destination);
+	
+	// solving the chrome poilcy, but functional?
+	document.querySelector('button').addEventListener('click', function() {
+		context.resume().then(() => {
+		console.log('Playback resumed successfully');
+		});
+	});
+	musicStarted = true;
+	audio.play();
+	console.log('playing music');
+}
+
 function testRender() {
 	modeling = mult(rotate(0, 1, 0, 0),
 	                mult(rotate(0, 0, 1, 0),rotate(0, 0, 0, 1)));
@@ -893,6 +899,5 @@ function testRender() {
 	
 	if(myPosition[0] == end[1] && myPosition[1] == end[2] && state == stop)
 		state = nextGame;
-	
     requestAnimFrame( testRender );
 }
