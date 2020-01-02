@@ -670,6 +670,8 @@ function action() {
 		return;
 	}
 	else if(state == nextGame) {
+		bgm.muted = true;
+		win.play();
 		nextMazeSize = maze_size + 1;
 		state = newGame;
 		return;
@@ -911,7 +913,6 @@ function gameRender() {
 	
 	if(myPosition[0] == end[1] && myPosition[1] == end[2] && state == stop)
 		state = nextGame;
-		//win.play();
     requestAnimFrame( gameRender );
 }
 
