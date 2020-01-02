@@ -477,9 +477,6 @@ window.onload = function init()
        flatten(materialSpecular) );	       
     gl.uniform1f( gl.getUniformLocation(program, "shininess"), materialShininess);
 
-    //event listeners for buttons 
-    document.getElementById( "pButton" ).onclick = function() {paused=!paused;};
-    document.getElementById( "dButton" ).onclick = function() {depthTest=!depthTest;};
 	
 	// event handlers for mouse input (borrowed from "Learning WebGL" lesson 11)
 	//canvas.onmousedown = handleMouseDown;
