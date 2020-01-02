@@ -25,6 +25,7 @@ var turnRight = 6;
 var newGame = 7;
 var mapping = 8;
 var nextGame = 9;
+var main = 10;
 var animate = 100;
 
 var mappingHight = 0.08;
@@ -494,15 +495,20 @@ window.onload = function init()
 	document.addEventListener('keydown', function(event) {
 		// keyboard "w"
 		if(event.keyCode == 87) {
-			if(state == stop)
+			if(state == stop) {
 				state = moveForward;
 				walk_sound.play();
+			}
 		}
 		// keyboard "s"
 		else if(event.keyCode == 83) {
 			if(state == stop) {
 				state = moveBackward;
 				walk_sound.play();
+			}
+			else if(state == main) {
+				state = stop;
+				gameRender();
 			}
 		}
 		// keyboard "a"
@@ -558,6 +564,7 @@ window.onload = function init()
 		}
 	});
 
+	state = main;
     mainRender();
 };
 
@@ -1074,16 +1081,38 @@ var letter = [
  [0, 0, 1, 0, 0],
  [0, 1, 0, 0, 0],
  [1, 1, 1, 1, 1]],
+// .
+[[0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0],
+ [0, 0, 1, 0, 0]],
 ];
 
 function drawLetter(L, x, y, size) {
-	for (i = -letter_size; i <= letter_size; i++) {
-		for (j = -letter_size; j <= letter_size; j++) {
-			if(letter[L.charCodeAt(0) - "A".charCodeAt(0)][letter_size + i][letter_size + j] == 1){
-				var cloned = mult(modeling, mult(translate(size * j + x, -size * i + y, 0), 
-					scale(size, size, size)));
-				gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned) );
-				gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+	if(L == " ")
+		return;
+	else if(L == ".") {
+		for (i = -letter_size; i <= letter_size; i++) {
+			for (j = -letter_size; j <= letter_size; j++) {
+				if(letter[26][letter_size + i][letter_size + j] == 1){
+					var cloned = mult(modeling, mult(translate(size * j + x, -size * i + y, 0), 
+						scale(size, size, size)));
+					gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned) );
+					gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+				}
+			}
+		}
+	}
+	else {
+		for (i = -letter_size; i <= letter_size; i++) {
+			for (j = -letter_size; j <= letter_size; j++) {
+				if(letter[L.charCodeAt(0) - "A".charCodeAt(0)][letter_size + i][letter_size + j] == 1){
+					var cloned = mult(modeling, mult(translate(size * j + x, -size * i + y, 0), 
+						scale(size, size, size)));
+					gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned) );
+					gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+				}
 			}
 		}
 	}
@@ -1092,9 +1121,7 @@ function drawLetter(L, x, y, size) {
 function drawSentence(S, y, size) {
 	if(S.length % 2 == 0) {
 		for(now = 0; now < S.length; now++) {
-			if(S[now] == " ")
-				continue;
-			else if(now - S.length / 2 < 0) {
+			if(now - S.length / 2 < 0) {
 				drawLetter(S[now], (now - S.length / 2) * (letter_size * 2 + 2) * size + 
 					(letter_size + 1) * size, y, size);
 			}
@@ -1106,14 +1133,37 @@ function drawSentence(S, y, size) {
 	}
 	else {
 		for(now = 0; now < S.length; now++) {
-			if(S[now] == " ")
-				continue;
-			else { 
-				drawLetter(S[now], (now - Math.floor(S.length / 2)) * 6 * size, y, size);
-			}
+			drawLetter(S[now], (now - Math.floor(S.length / 2)) * 6 * size, y, size);
+
 		}
 	}
 }
+
+var blablabla = [["BEGIN YOUR JOURNEY", 0.08],
+				[" ", 0.01],
+				["TIME TO GO", 0.08],
+				["YOU SHOULD START", 0.08],
+				["START NOW", 0.08],
+				["PRESS THE BUTTON", 0.08],
+				["DO IT NOW", 0.08],
+				["PLEASE JUST DO IT", 0.08],
+				["IM BEGGING YOU", 0.08],
+				["PLEASE", 0.08],
+				["...", 0.08],
+				[" ", 0.01],
+				["OVER MY DEAD BODY", 0.08],
+				["YO MAMA SO FAT", 0.08],
+				["DAT ASS", 0.08],
+				["GO GO POWER RANGER", 0.08],
+				["THE CAKE IS A LIE", 0.08],
+				["...", 0.08],
+				["QQ", 0.08]];
+
+var blablablaNow = 0;
+var blablablaCount = 0;
+var blablablaY = 0.08;
+
+var pressEnable = 1;
 
 function mainRender() {
 	modeling = mult(rotate(0, 1, 0, 0),
@@ -1121,11 +1171,9 @@ function mainRender() {
 
 	//if (paused)	modeling = moonRotationMatrix;
 	
-	setMazeColor(0.1, 0.1, 0.5);
-	
 	viewing = lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0]);
 
-	projection = perspective(100, 1.0, 0.001, 100.0);
+	projection = perspective(90, 1.0, 0.001, 100.0);
 
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 
@@ -1136,7 +1184,27 @@ function mainRender() {
 	gl.uniformMatrix4fv( projectionLoc, 0, flatten(projection) );
 	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(moonRotationMatrix) );
 	
-	drawSentence("YEADH", 0, 0.1);
+	setMazeColor(0.1, 0.1, 0.5);
+	drawSentence("DAT MAZE", 3, 0.2);
 	
-    //requestAnimFrame( mainRender );
+	if(blablablaCount % 50 == 0)
+		pressEnable *= -1;
+	//setMazeColor(0, 0, 0);
+	if(pressEnable == 1)
+		drawSentence("PRESS S TO START", 1.2, 0.08);
+	
+	if(blablablaCount % 20 == 0)
+		blablablaY *= -1;
+	//setMazeColor(0, 0, 0);
+	if(blablablaCount == 400) {
+		if(blablablaNow == blablabla.length - 1)
+			;
+		else
+			blablablaNow++;
+		blablablaCount = 0;
+	}
+	drawSentence(blablabla[blablablaNow][0], blablablaY, blablabla[blablablaNow][1]);
+	blablablaCount++;
+
+    requestAnimFrame( mainRender );
 }
