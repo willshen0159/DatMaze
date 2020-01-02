@@ -916,6 +916,7 @@ function gameRender() {
     requestAnimFrame( gameRender );
 }
 
+var letter_size = 2;
 var letter = [
 // A
 [[1, 1, 1, 1, 1], 
@@ -1075,12 +1076,12 @@ var letter = [
  [1, 1, 1, 1, 1]],
 ];
 
-function drawLetter(L, x, y) {
-	for (i = -2; i <= 2; i++) {
-		for (j = -2; j <= 2; j++) {
-			if(letter[L.charCodeAt(0) - "A".charCodeAt(0)][2 + i][2 + j] == 1){
-				var cloned = mult(modeling, mult(translate(0.1*j + x, -0.1*i + y, 0), 
-					scale(0.1, 0.1, 0.1)));
+function drawLetter(L, x, y, size) {
+	for (i = -letter_size; i <= letter_size; i++) {
+		for (j = -letter_size; j <= letter_size; j++) {
+			if(letter[L.charCodeAt(0) - "A".charCodeAt(0)][letter_size + i][letter_size + j] == 1){
+				var cloned = mult(modeling, mult(translate(size * j + x, -size * i + y, 0), 
+					scale(size, size, size)));
 				gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned) );
 				gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 			}
@@ -1088,16 +1089,18 @@ function drawLetter(L, x, y) {
 	}
 }
 
-function drawSentence(S, y) {
+function drawSentence(S, y, size) {
 	if(S.length % 2 == 0) {
 		for(now = 0; now < S.length; now++) {
 			if(S[now] == " ")
 				continue;
 			else if(now - S.length / 2 < 0) {
-				drawLetter(S[now], (now - S.length / 2) * 0.6 + 0.3, y);
+				drawLetter(S[now], (now - S.length / 2) * (letter_size * 2 + 2) * size + 
+					(letter_size + 1) * size, y, size);
 			}
 			else {	
-				drawLetter(S[now], (now - S.length / 2 + 1) * 0.6 - 0.3, y);
+				drawLetter(S[now], (now - S.length / 2 + 1) * (letter_size * 2 + 2) * size -
+					(letter_size + 1) * size, y, size);
 			}
 		}
 	}
@@ -1106,7 +1109,7 @@ function drawSentence(S, y) {
 			if(S[now] == " ")
 				continue;
 			else { 
-				drawLetter(S[now], (now - Math.floor(S.length / 2)) * 0.6, y);
+				drawLetter(S[now], (now - Math.floor(S.length / 2)) * 6 * size, y, size);
 			}
 		}
 	}
@@ -1133,7 +1136,7 @@ function mainRender() {
 	gl.uniformMatrix4fv( projectionLoc, 0, flatten(projection) );
 	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(moonRotationMatrix) );
 	
-	drawSentence("YEAH", 0);
+	drawSentence("YEADH", 0, 0.1);
 	
     //requestAnimFrame( mainRender );
 }
