@@ -535,7 +535,7 @@ window.onload = function init()
 		}
 	});
 
-    testRender();
+    gameRender();
 };
 
 
@@ -845,7 +845,7 @@ function Music(){
 	console.log('playing music');
 }
 
-function testRender() {
+function gameRender() {
 	modeling = mult(rotate(0, 1, 0, 0),
 	                mult(rotate(0, 0, 1, 0),rotate(0, 0, 0, 1)));
 
@@ -896,5 +896,5 @@ function testRender() {
 	
 	if(myPosition[0] == end[1] && myPosition[1] == end[2] && state == stop)
 		state = nextGame;
-    requestAnimFrame( testRender );
+    requestAnimFrame( gameRender );
 }
