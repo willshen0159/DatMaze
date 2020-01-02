@@ -58,7 +58,15 @@ var moveDir = [[0, -1],
 
 var endPointTheta = [45, 45, 0];
 
-var musicStarted = false; // music control
+var bgm = new Audio();			// bgm setting
+bgm.src = 'BGM.mp3';
+bgm.loop = true;
+bgm.volume = 0.5;
+var walk_sound = new Audio();	// walking sound effect setting
+walk_sound.src = 'walk.m4a';
+var win = new Audio();
+win.src = 'win.m4a';
+var musicStarted = false; 	// music control
 
 
 // Reset the wall and path of the maze
@@ -488,31 +496,42 @@ window.onload = function init()
 		if(event.keyCode == 87) {
 			if(state == stop)
 				state = moveForward;
+				walk_sound.play();
 		}
 		// keyboard "s"
 		else if(event.keyCode == 83) {
-			if(state == stop)
+			if(state == stop) {
 				state = moveBackward;
+				walk_sound.play();
+			}
 		}
 		// keyboard "a"
 		else if(event.keyCode == 65) {
-			if(state == stop)
+			if(state == stop) {
 				state = moveLeft;
+				walk_sound.play();
+			}
 		}
 		// keyboard "d"
 		else if(event.keyCode == 68) {
-			if(state == stop)
+			if(state == stop) {
 				state = moveRight;
+				walk_sound.play();
+			}
 		}
 		// keyboard "q"
 		else if(event.keyCode == 81) {
-			if(state == stop)
+			if(state == stop) {
 				state = turnLeft;
+				walk_sound.play();
+			}
 		}
 		// keyboard "e"
 		else if(event.keyCode == 69) {
-			if(state == stop)
+			if(state == stop) {
 				state = turnRight;
+				walk_sound.play();
+			}
 		}
 		// keyboard "n"
 		else if(event.keyCode == 78) {
@@ -532,6 +551,10 @@ window.onload = function init()
 		else if(event.keyCode == 80) {
 			if(state == stop)
 				state = nextGame;
+		}
+		// keyboard "o"
+		else if(event.keyCode == 79) {
+			Music();
 		}
 	});
 
@@ -825,24 +848,16 @@ function changeMazeColor() {
 
 // play music function, but it seems not functional
 function Music(){
-	if (musicStarted) return;
-	
-	var context = new AudioContext();
-	var audio = document.getElementById('myAudio');
-	audio.crossOrigin = "anonymous";
-	var audioSrc = context.createMediaElementSource(audio);
-	
-	audioSrc.connect(context.destination);
-	
-	// solving the chrome poilcy, but functional?
-	document.querySelector('button').addEventListener('click', function() {
-		context.resume().then(() => {
-		console.log('Playback resumed successfully');
-		});
-	});
-	musicStarted = true;
-	audio.play();
-	console.log('playing music');
+	if (musicStarted) {
+		musicStarted = false;
+		bgm.muted = true;
+		//console.log('pausing music');
+	} else {
+		musicStarted = true;
+		bgm.muted = false;
+		bgm.play();
+		//console.log('playing music');
+	}
 }
 
 function testRender() {
@@ -896,5 +911,6 @@ function testRender() {
 	
 	if(myPosition[0] == end[1] && myPosition[1] == end[2] && state == stop)
 		state = nextGame;
+		//win.play();
     requestAnimFrame( testRender );
 }
