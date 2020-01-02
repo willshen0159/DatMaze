@@ -558,7 +558,7 @@ window.onload = function init()
 		}
 	});
 
-    testRender();
+    gameRender();
 };
 
 
@@ -860,7 +860,7 @@ function Music(){
 	}
 }
 
-function testRender() {
+function gameRender() {
 	modeling = mult(rotate(0, 1, 0, 0),
 	                mult(rotate(0, 0, 1, 0),rotate(0, 0, 0, 1)));
 
