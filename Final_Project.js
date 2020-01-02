@@ -535,7 +535,7 @@ window.onload = function init()
 		}
 	});
 
-    gameRender();
+    mainRender();
 };
 
 
@@ -897,4 +897,35 @@ function gameRender() {
 	if(myPosition[0] == end[1] && myPosition[1] == end[2] && state == stop)
 		state = nextGame;
     requestAnimFrame( gameRender );
+}
+
+var letter = 
+[[0, 0, 0, 0, 0], 
+ [0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0]]
+
+function mainRender() {
+	modeling = mult(rotate(0, 1, 0, 0),
+	                mult(rotate(0, 0, 1, 0),rotate(0, 0, 0, 1)));
+
+	//if (paused)	modeling = moonRotationMatrix;
+	
+	setMazeColor(mazeColor[0], mazeColor[1], mazeColor[2]);
+	
+	viewing = lookAt([0, 0, 3], [0, 0, 0], [0, 1, 0]);
+
+	projection = perspective(100, 1.0, 1.0, 100.0);
+
+    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+
+    //if (! paused) theta[axis] += 1.0;
+	if (depthTest) gl.enable(gl.DEPTH_TEST); else gl.disable(gl.DEPTH_TEST);
+
+    gl.uniformMatrix4fv( viewingLoc,    0, flatten(viewing) );
+	gl.uniformMatrix4fv( projectionLoc, 0, flatten(projection) );
+	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(moonRotationMatrix) );
+	
+    requestAnimFrame( mainRender );
 }
