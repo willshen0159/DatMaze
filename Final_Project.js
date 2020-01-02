@@ -1073,12 +1073,6 @@ var letter = [
  [0, 0, 1, 0, 0],
  [0, 1, 0, 0, 0],
  [1, 1, 1, 1, 1]],
-// space
-[[0, 0, 0, 0, 0],
- [0, 0, 0, 0, 0],
- [0, 0, 0, 0, 0],
- [0, 0, 0, 0, 0],
- [0, 0, 0, 0, 0]]
 ];
 
 function drawLetter(L, x, y) {
@@ -1097,7 +1091,9 @@ function drawLetter(L, x, y) {
 function drawSentence(S, y) {
 	if(S.length % 2 == 0) {
 		for(now = 0; now < S.length; now++) {
-			if(now - S.length / 2 < 0) {
+			if(S[now] == " ")
+				continue;
+			else if(now - S.length / 2 < 0) {
 				drawLetter(S[now], (now - S.length / 2) * 0.6 + 0.3, y);
 			}
 			else {	
@@ -1107,7 +1103,11 @@ function drawSentence(S, y) {
 	}
 	else {
 		for(now = 0; now < S.length; now++) {
-			drawLetter(S[now], (now - Math.floor(S.length / 2)) * 0.6, y);
+			if(S[now] == " ")
+				continue;
+			else { 
+				drawLetter(S[now], (now - Math.floor(S.length / 2)) * 0.6, y);
+			}
 		}
 	}
 }
@@ -1133,7 +1133,7 @@ function mainRender() {
 	gl.uniformMatrix4fv( projectionLoc, 0, flatten(projection) );
 	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(moonRotationMatrix) );
 	
-	drawSentence("UWW", 0);
+	drawSentence("YEAH", 0);
 	
     //requestAnimFrame( mainRender );
 }
