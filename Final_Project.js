@@ -1147,7 +1147,7 @@ var blablabla = [["BEGIN YOUR JOURNEY", 0.08],
 				[" ", 0.01],
 				["OVER MY DEAD BODY", 0.08],
 				["YO MAMA SO FAT", 0.08],
-				["DAT ASS", 0.08],
+				["DO YOU KNOW DA WAE", 0.08],
 				["GO GO POWER RANGER", 0.08],
 				["THE CAKE IS A LIE", 0.08],
 				["...", 0.08],
@@ -1155,7 +1155,8 @@ var blablabla = [["BEGIN YOUR JOURNEY", 0.08],
 
 var blablablaNow = 0;
 var blablablaCount = 0;
-var blablablaY = 0.08;
+var blablablaY = -1.2;
+var shake = 0.08;
 
 var pressEnable = 1;
 
@@ -1185,10 +1186,10 @@ function mainRender() {
 		pressEnable *= -1;
 	//setMazeColor(0, 0, 0);
 	if(pressEnable == 1)
-		drawSentence("PRESS S TO START", 1.2, 0.08);
+		drawSentence("PRESS S TO START", 0, 0.08);
 	
 	if(blablablaCount % 20 == 0)
-		blablablaY *= -1;
+		shake *= -1;
 	//setMazeColor(0, 0, 0);
 	if(blablablaCount == 400) {
 		if(blablablaNow == blablabla.length - 1)
@@ -1197,7 +1198,7 @@ function mainRender() {
 			blablablaNow++;
 		blablablaCount = 0;
 	}
-	drawSentence(blablabla[blablablaNow][0], blablablaY, blablabla[blablablaNow][1]);
+	drawSentence(blablabla[blablablaNow][0], blablablaY + shake, blablabla[blablablaNow][1]);
 	blablablaCount++;
 
     requestAnimFrame( mainRender );
