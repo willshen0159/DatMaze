@@ -955,6 +955,18 @@ function gameRender() {
 function drawLetter(L, x, y, size) {
 	if(L == " ")
 		return;
+	else if(L == "&") {
+		for (i = -letter_size; i <= letter_size; i++) {
+			for (j = -letter_size; j <= letter_size; j++) {
+				if(letter[27][letter_size + i][letter_size + j] == 1){
+					var cloned = mult(modeling, mult(translate(size * j + x, -size * i + y, 0), 
+						scale(size, size, size)));
+					gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned) );
+					gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+				}
+			}
+		}
+	}
 	else if(L.charCodeAt(0) >= "A".charCodeAt(0) && L.charCodeAt(0) <= "Z".charCodeAt(0)){
 		for (i = -letter_size; i <= letter_size; i++) {
 			for (j = -letter_size; j <= letter_size; j++) {
@@ -1091,6 +1103,8 @@ function mainRender() {
 	drawSentence(blablabla[blablablaNow][0], blablablaY + shake, blablabla[blablablaNow][1]);
 	blablablaCount++;
 
+	drawSentence("CREATED BY W.SHEN & J.CHEN", -3, 0.03)
+	
 	action();
 	if(state == stop)
 		return;
