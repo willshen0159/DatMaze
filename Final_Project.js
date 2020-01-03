@@ -1016,6 +1016,8 @@ function mainRender() {
 	setMazeColor(0.1, 0.1, 0.5);
 	drawSentence("DAT MAZE", 3, 0.2);
 	
+	drawSentence("THE ONE AND ONLY MAZE", 2, 0.076);
+	
 	if(blablablaCount % 50 == 0)
 		pressEnable *= -1;
 	//setMazeColor(0, 0, 0);
