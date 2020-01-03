@@ -47,11 +47,12 @@ var animationCount = 0;
 var myPrePosition = [3, 3];
 var preFace = 0;
 
-var animationFrame = [18, 15, 400, 50];
+var animationFrame = [18, 15, 400, 50, 200];
 var moveAnimation = 0;
 var turnAnimation = 1;
 var newGameAnimation = 2;
 var mappingAnimation = 3;
+var startingAnimation = 4;
 
 var moveDir = [[0, -1],
 				[-1, 0],
@@ -681,8 +682,15 @@ function action() {
 		return;
 	}
 	else if(state == starting) {
-		state = stop;
-		gameRender();
+		if(animated) {
+			animationCount = 1;
+			state += animate;
+		}
+		if(!animated) {
+			state = stop;
+			gameRender();
+			return;
+		}
 	}
 	// if there is an animation running, state won't be "stop"
 	if(animationCount == 0)
@@ -808,6 +816,26 @@ function setFaceDirection() {
 		else 
 			state = mapping;
 	}
+	else if(state == starting + animate) {
+		if(animationCount == animationFrame[startingAnimation] / 2) {
+			for(i = 0; i < 3; i++) {
+				faceDirection[i] = eyePosition[i] + faceDir[face][i];
+			}
+		}
+		for(i = 0; i < 36; i++) {
+			colorsArray[i][3] = 1 / (animationFrame[startingAnimation] / 2) * 
+				(animationCount - animationFrame[startingAnimation] / 2);
+		}
+		var cBuffer = gl.createBuffer();
+		gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
+		gl.bufferData( gl.ARRAY_BUFFER, flatten(colorsArray), gl.STATIC_DRAW );
+		var vColor = gl.getAttribLocation( program, "vColor" );
+		gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
+		gl.enableVertexAttribArray( vColor );
+		animationCount++;
+		if(animationCount == animationFrame[startingAnimation])
+			animationCount = 0;
+	}
 	else {
 		for(i = 0; i < 3; i++) {
 			faceDirection[i] = eyePosition[i] + faceDir[face][i];
@@ -918,7 +946,7 @@ function gameRender() {
 	gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned));
 	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(endPointRotationMatrix) );
 	gl.drawArrays( gl.TRIANGLES, 0, numVertices );
-	
+
 	if(myPosition[0] == end[1] && myPosition[1] == end[2] && state == stop)
 		state = nextGame;
     requestAnimFrame( gameRender );
@@ -1020,6 +1048,25 @@ function mainRender() {
 	gl.uniformMatrix4fv( projectionLoc, 0, flatten(projection) );
 	gl.uniformMatrix4fv( lightMatrixLoc,0, flatten(moonRotationMatrix) );
 	
+	if(state == starting + animate) {
+		if(animationCount < animationFrame[startingAnimation] / 2) {
+			for(i = 0; i < 36; i++) {
+				colorsArray[i][3] = 1 - 1 / (animationFrame[startingAnimation] / 2) * animationCount;
+			}
+			var cBuffer = gl.createBuffer();
+			gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
+			gl.bufferData( gl.ARRAY_BUFFER, flatten(colorsArray), gl.STATIC_DRAW );
+			var vColor = gl.getAttribLocation( program, "vColor" );
+			gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
+			gl.enableVertexAttribArray( vColor );
+		}
+		animationCount++;
+		if(animationCount == animationFrame[startingAnimation] / 2) {
+			gameRender();
+			return;
+		}
+	}
+	
 	setMazeColor(0.1, 0.1, 0.5);
 	drawSentence("DAT MAZE", 3, 0.2);
 	
@@ -1043,7 +1090,7 @@ function mainRender() {
 	}
 	drawSentence(blablabla[blablablaNow][0], blablablaY + shake, blablabla[blablablaNow][1]);
 	blablablaCount++;
-	
+
 	action();
 	if(state == stop)
 		return;
