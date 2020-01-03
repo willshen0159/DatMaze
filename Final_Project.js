@@ -557,6 +557,14 @@ window.onload = function init()
 		else if(event.keyCode == 79) {
 			Music();
 		}
+		// keyboard ","
+		else if(event.keyCode == 188) {
+			bgm.volume -= 0.1;
+		}
+		// keyboard "."
+		else if(event.keyCode == 190) {
+			bgm.volume += 0.1;
+		}
 	});
 
 	state = main;
