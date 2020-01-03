@@ -26,6 +26,7 @@ var newGame = 7;
 var mapping = 8;
 var nextGame = 9;
 var main = 10;
+var starting = 11;
 var animate = 100;
 
 var mappingHight = 0.08;
@@ -505,8 +506,7 @@ window.onload = function init()
 				state = moveBackward;
 			}
 			else if(state == main) {
-				state = stop;
-				gameRender();
+				state = starting;
 			}
 		}
 		// keyboard "a"
@@ -676,6 +676,13 @@ function action() {
 		nextMazeSize = maze_size + 1;
 		state = newGame;
 		return;
+	}
+	else if(state == main) {
+		return;
+	}
+	else if(state == starting) {
+		state = stop;
+		gameRender();
 	}
 	// if there is an animation running, state won't be "stop"
 	if(animationCount == 0)
@@ -1036,7 +1043,8 @@ function mainRender() {
 	}
 	drawSentence(blablabla[blablablaNow][0], blablablaY + shake, blablabla[blablablaNow][1]);
 	blablablaCount++;
-
+	
+	action();
 	if(state == stop)
 		return;
     requestAnimFrame( mainRender );
