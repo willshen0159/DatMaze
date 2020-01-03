@@ -1086,10 +1086,10 @@ var letter = [
 function drawLetter(L, x, y, size) {
 	if(L == " ")
 		return;
-	else if(L == ".") {
+	else if(L.charCodeAt(0) >= "A".charCodeAt(0) && L.charCodeAt(0) <= "Z".charCodeAt(0)){
 		for (i = -letter_size; i <= letter_size; i++) {
 			for (j = -letter_size; j <= letter_size; j++) {
-				if(letter[26][letter_size + i][letter_size + j] == 1){
+				if(letter[L.charCodeAt(0) - "A".charCodeAt(0)][letter_size + i][letter_size + j] == 1){
 					var cloned = mult(modeling, mult(translate(size * j + x, -size * i + y, 0), 
 						scale(size, size, size)));
 					gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned) );
@@ -1101,7 +1101,7 @@ function drawLetter(L, x, y, size) {
 	else {
 		for (i = -letter_size; i <= letter_size; i++) {
 			for (j = -letter_size; j <= letter_size; j++) {
-				if(letter[L.charCodeAt(0) - "A".charCodeAt(0)][letter_size + i][letter_size + j] == 1){
+				if(letter[26][letter_size + i][letter_size + j] == 1){
 					var cloned = mult(modeling, mult(translate(size * j + x, -size * i + y, 0), 
 						scale(size, size, size)));
 					gl.uniformMatrix4fv( modelingLoc,   0, flatten(cloned) );
