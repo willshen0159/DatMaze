@@ -1037,5 +1037,7 @@ function mainRender() {
 	drawSentence(blablabla[blablablaNow][0], blablablaY + shake, blablabla[blablablaNow][1]);
 	blablablaCount++;
 
+	if(state == stop)
+		return;
     requestAnimFrame( mainRender );
 }
