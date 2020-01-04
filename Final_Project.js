@@ -704,6 +704,9 @@ function action() {
 			animationCount = 1;
 			state += animate;
 			musicStarted = true;
+			bgm.muted = false;
+			walk_sound.muted = false;
+			win.muted = false;
 			Music(bgm);
 		}
 		if(!animated) {
