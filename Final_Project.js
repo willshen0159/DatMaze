@@ -580,6 +580,7 @@ window.onload = function init()
 		else if(event.keyCode == 74) {
 			if(state == stop) {
 				state = backMain;
+				bgm.pause();
 				bgm.currentTime = 0;
 				bgm.muted = true;
 				bgm.volume = 0.5;
