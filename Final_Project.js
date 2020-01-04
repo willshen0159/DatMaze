@@ -1119,7 +1119,7 @@ function mainRender() {
 	drawSentence(blablabla[blablablaNow][0], 0, blablablaY + shake, blablabla[blablablaNow][1]);
 	blablablaCount++;
 
-	drawSentence("CREATED BY W.SHEN & J.CHEN", 0, -3, 0.03)
+	drawSentence("CREATED BY W.SHEN & J.CHEN", 0, -3, 0.03);
 	
 	action();
 	if(state == stop)
