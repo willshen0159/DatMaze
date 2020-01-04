@@ -907,7 +907,7 @@ function changeMazeColor() {
 	}
 }
 
-// play music function, but it seems not functional
+// play music function
 function Music(item){
 	if (musicStarted){
 		item.play();
