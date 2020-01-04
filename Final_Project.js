@@ -1007,22 +1007,22 @@ function drawLetter(L, x, y, size) {
 	}
 }
 
-function drawSentence(S, y, size) {
+function drawSentence(S, x, y, size) {
 	if(S.length % 2 == 0) {
 		for(now = 0; now < S.length; now++) {
 			if(now - S.length / 2 < 0) {
 				drawLetter(S[now], (now - S.length / 2) * (letter_size * 2 + 2) * size + 
-					(letter_size + 1) * size, y, size);
+					(letter_size + 1) * size + x, y, size);
 			}
 			else {	
 				drawLetter(S[now], (now - S.length / 2 + 1) * (letter_size * 2 + 2) * size -
-					(letter_size + 1) * size, y, size);
+					(letter_size + 1) * size + x, y, size);
 			}
 		}
 	}
 	else {
 		for(now = 0; now < S.length; now++) {
-			drawLetter(S[now], (now - Math.floor(S.length / 2)) * 6 * size, y, size);
+			drawLetter(S[now], (now - Math.floor(S.length / 2)) * 6 * size + x, y, size);
 
 		}
 	}
@@ -1094,15 +1094,15 @@ function mainRender() {
 	}
 	
 	setMazeColor(0.1, 0.1, 0.5);
-	drawSentence("DAT MAZE", 3, 0.2);
+	drawSentence("DAT MAZE", 0, 3, 0.2);
 	
-	drawSentence("THE ONE AND ONLY MAZE", 2, 0.076);
+	drawSentence("THE ONE AND ONLY MAZE", 0, 2, 0.076);
 	
 	if(blablablaCount % 50 == 0)
 		pressEnable *= -1;
 	//setMazeColor(0, 0, 0);
 	if(pressEnable == 1)
-		drawSentence("PRESS S TO START", 0, 0.08);
+		drawSentence("PRESS S TO START", 0, 0, 0.08);
 	
 	if(blablablaCount % 20 == 0)
 		shake *= -1;
@@ -1114,10 +1114,10 @@ function mainRender() {
 			blablablaNow++;
 		blablablaCount = 0;
 	}
-	drawSentence(blablabla[blablablaNow][0], blablablaY + shake, blablabla[blablablaNow][1]);
+	drawSentence(blablabla[blablablaNow][0], 0, blablablaY + shake, blablabla[blablablaNow][1]);
 	blablablaCount++;
 
-	drawSentence("CREATED BY W.SHEN & J.CHEN", -3, 0.03)
+	drawSentence("CREATED BY W.SHEN & J.CHEN", 0, -3, 0.03)
 	
 	action();
 	if(state == stop)
