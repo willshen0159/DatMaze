@@ -69,7 +69,7 @@ var walk_sound = new Audio();	// walking sound effect setting
 walk_sound.src = 'walk.m4a';
 var win = new Audio();
 win.src = 'win.m4a';
-var musicStarted = false; 	// music control
+var musicStarted = true; 	// music control
 
 
 // Reset the wall and path of the maze
@@ -703,10 +703,6 @@ function action() {
 		if(animated) {
 			animationCount = 1;
 			state += animate;
-			musicStarted = true;
-			bgm.muted = false;
-			walk_sound.muted = false;
-			win.muted = false;
 			Music(bgm);
 		}
 		if(!animated) {
