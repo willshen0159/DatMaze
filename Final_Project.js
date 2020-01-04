@@ -694,6 +694,7 @@ function action() {
 		if(animated) {
 			animationCount = 1;
 			state += animate;
+			Music();
 		}
 		if(!animated) {
 			state = stop;
