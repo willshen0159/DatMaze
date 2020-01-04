@@ -64,7 +64,6 @@ var endPointTheta = [45, 45, 0];
 var bgm = new Audio();			// bgm setting
 bgm.src = 'BGM.mp3';
 bgm.loop = true;
-bgm.autoplay = "autoplay";
 bgm.volume = 0.5;
 var walk_sound = new Audio();	// walking sound effect setting
 walk_sound.src = 'walk.m4a';
@@ -556,7 +555,17 @@ window.onload = function init()
 		}
 		// keyboard "o"
 		else if(event.keyCode == 79) {
-			Music();
+			if (musicStarted){
+				musicStarted = false;
+				bgm.muted = true;
+				walk_sound.muted = true;
+				win.muted = true;
+			} else {
+				musicStarted = true;
+				bgm.muted = false;
+				walk_sound.muted = false;
+				win.muted = false;
+			}
 		}
 		// keyboard ","
 		else if(event.keyCode == 188) {
@@ -624,7 +633,7 @@ function action() {
 		[myPosition[1] + moveDir[(face + state - 1) % 4][1]] == 0) {
 			// check if animation mode 
 			if(animated) {
-				walk_sound.play();
+				Music(walk_sound);
 				animationCount = 1;
 				// use myPrePosition to store the information of previous position
 				myPrePosition[0] = myPosition[0];
@@ -682,7 +691,7 @@ function action() {
 		return;
 	}
 	else if(state == nextGame) {
-		win.play();
+		Music(win);
 		nextMazeSize = maze_size + 1;
 		state = newGame;
 		return;
@@ -694,7 +703,8 @@ function action() {
 		if(animated) {
 			animationCount = 1;
 			state += animate;
-			Music();
+			musicStarted = true;
+			Music(bgm);
 		}
 		if(!animated) {
 			state = stop;
@@ -895,20 +905,11 @@ function changeMazeColor() {
 }
 
 // play music function, but it seems not functional
-function Music(){
-	if (musicStarted) {
-		musicStarted = false;
-		bgm.muted = true;
-		walk_sound.muted = true;
-		win.muted = true;
-		//console.log('pausing music');
-	} else {
-		musicStarted = true;
-		bgm.muted = false;
-		walk_sound.muted = false;
-		win.muted = false;
-		bgm.play();
-		//console.log('playing music');
+function Music(item){
+	if (musicStarted){
+		item.play();
+	} else{
+		return;
 	}
 }
 
