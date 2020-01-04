@@ -64,6 +64,7 @@ var endPointTheta = [45, 45, 0];
 var bgm = new Audio();			// bgm setting
 bgm.src = 'BGM.mp3';
 bgm.loop = true;
+bgm.autoplay = "autoplay";
 bgm.volume = 0.5;
 var walk_sound = new Audio();	// walking sound effect setting
 walk_sound.src = 'walk.m4a';
@@ -897,10 +898,14 @@ function Music(){
 	if (musicStarted) {
 		musicStarted = false;
 		bgm.muted = true;
+		walk_sound.muted = true;
+		win.muted = true;
 		//console.log('pausing music');
 	} else {
 		musicStarted = true;
 		bgm.muted = false;
+		walk_sound.muted = false;
+		win.muted = false;
 		bgm.play();
 		//console.log('playing music');
 	}
