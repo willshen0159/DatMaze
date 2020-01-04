@@ -578,8 +578,12 @@ window.onload = function init()
 		}
 		// keyboard "j"
 		else if(event.keyCode == 74) {
-			if(state == stop)
+			if(state == stop) {
 				state = backMain;
+				bgm.currentTime = 0;
+				bgm.muted = true;
+				bgm.volume = 0.5;
+			}
 		}
 	});
 
@@ -709,6 +713,7 @@ function action() {
 		if(animated) {
 			animationCount = 1;
 			state += animate;
+			bgm.muted = false;
 			bgm.play();
 			Music(bgm);
 		}
