@@ -703,6 +703,7 @@ function action() {
 		if(animated) {
 			animationCount = 1;
 			state += animate;
+			bgm.play();
 			Music(bgm);
 		}
 		if(!animated) {
@@ -908,6 +909,7 @@ function Music(item){
 	if (musicStarted){
 		item.play();
 	} else{
+		item.muted = true;
 		return;
 	}
 }
