@@ -27,6 +27,7 @@ var mapping = 8;
 var nextGame = 9;
 var main = 10;
 var starting = 11;
+var backMain = 12;
 var animate = 100;
 
 var mappingHight = 0.08;
@@ -575,6 +576,11 @@ window.onload = function init()
 		else if(event.keyCode == 190) {
 			bgm.volume += 0.1;
 		}
+		// keyboard "j"
+		else if(event.keyCode == 74) {
+			if(state == stop)
+				state = backMain;
+		}
 	});
 
 	state = main;
@@ -711,6 +717,17 @@ function action() {
 			gameRender();
 			return;
 		}
+	}
+	else if(state == backMain) {
+		state = main;
+		mainRender();
+		initMyPosition();
+		initFace();
+		maze_size = 2;
+		nextMazeSize = 2;
+		blablablaNow = 0;
+		blablablaCount = 0;
+		return;
 	}
 	// if there is an animation running, state won't be "stop"
 	if(animationCount == 0)
@@ -951,7 +968,7 @@ function gameRender() {
 			}
 		}
 	}
-	
+
 	setMazeColor(0.4, 0.8, 1);
 	endPointTheta[xAxis] = (endPointTheta[xAxis] + 1) % 360;
 	endPointTheta[yAxis] = (endPointTheta[yAxis] + 1) % 360;
@@ -965,6 +982,8 @@ function gameRender() {
 
 	if(myPosition[0] == end[1] && myPosition[1] == end[2] && state == stop)
 		state = nextGame;
+	if(state == main)
+		return;
     requestAnimFrame( gameRender );
 }
 
@@ -1120,7 +1139,7 @@ function mainRender() {
 	blablablaCount++;
 
 	drawSentence("CREATED BY W.SHEN & J.CHEN", 0, -3, 0.03);
-	
+
 	action();
 	if(state == stop)
 		return;
