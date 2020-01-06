@@ -731,6 +731,7 @@ function action() {
 		initFace();
 		maze_size = 2;
 		nextMazeSize = 2;
+		changeMazeColor();
 		maze_generate(maze, maze_size, end);
 		blablablaNow = 0;
 		blablablaCount = 0;
