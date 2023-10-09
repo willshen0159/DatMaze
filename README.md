@@ -3,7 +3,8 @@
 ### Introduction
 It's a WebGl game. It's a maze. It's a final project of Computer Graphics in the fall of 2019.
 ### Usage
-Clone the whole repository to your computer, then use [Google Chrome](https://www.google.com/chrome/) to open [Final_Project.html](https://github.com/willshen0159/DatMaze/blob/master/Final_Project.html).
+1. Clone the whole repository to your computer, then use [Google Chrome](https://www.google.com/chrome/) to open [Final_Project.html](https://github.com/willshen0159/DatMaze/blob/master/Final_Project.html).
+2. Or you can just click [here](https://willshen0159.github.io/DatMaze/) via [Google Chrome](https://www.google.com/chrome/).
 ### How To Play
 Move your character to find and get the blue diamond.  
 ![](https://github.com/willshen0159/DatMaze/blob/master/blueDiamond.png)  
